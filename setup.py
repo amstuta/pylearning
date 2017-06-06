@@ -35,9 +35,5 @@ setup(
 
     keywords='machine learning data decision trees random forest',
 
-    packages=find_packages(exclude=['contrib','docs','tests']),
-
-    # install_requires=[],
-    # extras_require={},
-    # package_data={},
+    packages=find_packages(exclude=['contrib','docs','tests'])
 )
