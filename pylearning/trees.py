@@ -1,7 +1,6 @@
-#!/usr/bin/env python3
-
 import random
 from math import log2, sqrt
+
 from .node import DecisionNode
 
 
@@ -156,7 +155,6 @@ class DecisionTreeRegressor(DecisionTree):
                 if var1 is None or var2 is None:
                     continue
                 variance = var1 + var2
-
                 if lowest_variance is None or variance < lowest_variance:
                     lowest_variance = variance
                     best_criteria   = (column, feature_value)

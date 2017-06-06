@@ -1,8 +1,7 @@
-#!/usr/bin/env python3
-
 import logging
 import random
 from concurrent.futures import ProcessPoolExecutor
+
 from .trees import DecisionTreeRegressor
 from .trees import DecisionTreeClassifier
 
