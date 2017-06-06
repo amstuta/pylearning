@@ -3,7 +3,7 @@
 import logging
 from math import sqrt
 from sklearn.model_selection import train_test_split
-from random_forest.random_forest import RandomForestRegressor
+from pylearning.random_forest import RandomForestRegressor
 
 
 def test_rf():
