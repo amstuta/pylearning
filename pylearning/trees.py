@@ -5,12 +5,17 @@ from math import log2, sqrt
 from .node import DecisionNode
 
 
-class TreeBase:
+class DecisionTree:
+    """
+    Base class for decision trees.
+    This class is not meant to be instanciated, its subclasses should be used
+    instead.
+    """
 
     def predict(self, features):
         """
         Predict a value for the given features.
-        :param  features:   Array of features of dimension (nb_features)
+        :param features:    Array of features of dimension (nb_features)
         :return:            Float value.
         """
         if self.random_features:
@@ -19,7 +24,7 @@ class TreeBase:
                 raise ValueError("The given features don't match\
                                  the training set")
             features = self.get_features_subset(features)
-        return self.classify(features, self.root_node)
+        return self.propagate(features, self.root_node)
 
 
     def choose_random_features(self, row):
@@ -65,9 +70,7 @@ class TreeBase:
 
 
 
-
-
-class DecisionTreeRegressor(TreeBase):
+class DecisionTreeRegressor(DecisionTree):
     """
     :param  max_depth:          Maximum number of splits during training
     :param  random_features:    If False, all the features will be used to
@@ -78,15 +81,6 @@ class DecisionTreeRegressor(TreeBase):
                                 forest.
     :param min_leaf_examples:   Minimum number of examples in a meaf node.
     """
-
-    # class DecisionNode:
-    #     def __init__(self, col=-1, value=None, result=None, tb=None, fb=None):
-    #         self.col = col
-    #         self.value = value
-    #         self.result = result
-    #         self.tb = tb
-    #         self.fb = fb
-
 
     def __init__(self, max_depth=-1, random_features=False, min_leaf_examples=6):
         self.root_node = None
@@ -109,63 +103,6 @@ class DecisionTreeRegressor(TreeBase):
             self.features_indexes = self.choose_random_features(features[0])
             features = [self.get_features_subset(row) for row in features]
         self.root_node = self.build_tree(features, targets, self.max_depth)
-
-
-    # def predict(self, features):
-    #     """
-    #     Predict a value for the given features.
-    #     :param  features:   Array of features of dimension (nb_features)
-    #     :return:            Float value.
-    #     """
-    #     if self.random_features:
-    #         if not all(i in range(len(features))
-    #                    for i in self.features_indexes):
-    #             raise ValueError("The given features don't match\
-    #                              the training set")
-    #         features = self.get_features_subset(features)
-    #     return self.classify(features, self.root_node)
-    #
-    #
-    # def choose_random_features(self, row):
-    #     """
-    #     Randomly selects indexes in the given list. The number of indexes
-    #     chosen is the square root of the number of elements in the initial
-    #     list.
-    #     :param row: One-dimensional array
-    #     :return:    Array containing the chosen indexes
-    #     """
-    #     nb_features = len(row)
-    #     return random.sample(range(nb_features), int(sqrt(nb_features)))
-    #
-    #
-    # def get_features_subset(self, row):
-    #     """
-    #     Returns the randomly selected values in the given features.
-    #     :param row: One-dimensional array of features
-    #     """
-    #     return [row[i] for i in self.features_indexes]
-    #
-    #
-    # def divide_set(self, features, targets, column, feature_value):
-    #     """
-    #     Divide the given dataset depending on the value at the given column index.
-    #     :param features:    Features of the dataset
-    #     :param targets:     Targets of the dataset
-    #     :param column:      The index of the column used to split data
-    #     :param value:       The value used for the split
-    #     """
-    #     split_function = None
-    #     if isinstance(feature_value, int) or isinstance(feature_value, float):
-    #         split_function = lambda row: row[column] >= feature_value
-    #     else:
-    #         split_function = lambda row: row[column] == feature_value
-    #
-    #     set1 = [row for row in zip(features, targets) if split_function(row[0])]
-    #     set2 = [row for row in zip(features, targets) if not split_function(row[0])]
-    #
-    #     feat1, targs1 = [x[0] for x in set1], [x[1] for x in set1]
-    #     feat2, targs2 = [x[0] for x in set2], [x[1] for x in set2]
-    #     return feat1, targs1, feat2, targs2
 
 
     def mean_output(self, targets):
@@ -204,18 +141,17 @@ class DecisionTreeRegressor(TreeBase):
             return DecisionNode()
         if depth == 0:
             return DecisionNode(result=self.mean_output(targets))
-            # Add check: if all features have same value, stop
 
         lowest_variance = None
         best_criteria = None
         best_sets = None
 
         for column in range(len(features[0])):
-            column_values = sorted([feature[column] for feature in features]) # Maybe remove sorted
+            column_values = [feature[column] for feature in features]
             for feature_value in column_values:
                 feats1, targs1, feats2, targs2 = \
                     self.divide_set(features, targets, column, feature_value)
-                var1 = self.variance(targs1) # Replace variance by deviation
+                var1 = self.variance(targs1)
                 var2 = self.variance(targs2)
                 if var1 is None or var2 is None:
                     continue
@@ -238,7 +174,7 @@ class DecisionTreeRegressor(TreeBase):
             return DecisionNode(result=self.mean_output(targets))
 
 
-    def classify(self, observation, tree): # Change name
+    def propagate(self, observation, tree):
         """
         Makes a prediction using the given features.
         :param  observation:    The features to use to predict
@@ -260,11 +196,11 @@ class DecisionTreeRegressor(TreeBase):
                     branch = tree.tb
                 else:
                     branch = tree.fb
-            return self.classify(observation, branch)
+            return self.propagate(observation, branch)
 
 
 
-class DecisionTreeClassifier(TreeBase):
+class DecisionTreeClassifier(DecisionTree):
     """
     :param  max_depth:          Maximum number of splits during training
     :param  random_features:    If False, all the features will be used to
@@ -299,41 +235,6 @@ class DecisionTreeClassifier(TreeBase):
             self.features_indexes = self.choose_random_features(features[0])
             features = [self.get_features_subset(row) for row in features]
         self.root_node = self.build_tree(features, targets, criterion, self.max_depth)
-
-
-    def predict(self, features):
-        """
-        Predict a value for the given features.
-        :param  features:   Array of features of dimension (nb_features)
-        :return:            Float value.
-        """
-        if self.random_features:
-            if not all(i in range(len(features))
-                       for i in self.features_indexes):
-                raise ValueError("The given features don't match\
-                                 the training set")
-            features = self.get_features_subset(features)
-        return self.classify(features, self.root_node)
-
-
-    def choose_random_features(self, row):
-        """
-        Randomly selects indexes in the given list. The number of indexes
-        chosen is the square root of the number of elements in the initial
-        list.
-        :param row: One-dimensional array
-        :return:    Array containing the chosen indexes
-        """
-        nb_features = len(row)
-        return random.sample(range(nb_features), int(sqrt(nb_features)))
-
-
-    def get_features_subset(self, row):
-        """
-        Returns the randomly selected values in the given features.
-        :param row: One-dimensional array of features
-        """
-        return [row[i] for i in self.features_indexes]
 
 
     def unique_counts(self, targets):
@@ -405,7 +306,7 @@ class DecisionTreeClassifier(TreeBase):
             return DecisionNode(result=self.unique_counts(targets))
 
 
-    def classify(self, observation, tree):
+    def propagate(self, observation, tree):
         """
         Makes a prediction using the given features.
         :param  observation:    The features to use to predict
@@ -427,4 +328,4 @@ class DecisionTreeClassifier(TreeBase):
                     branch = tree.tb
                 else:
                     branch = tree.fb
-            return self.classify(observation, branch)
+            return self.propagate(observation, branch)

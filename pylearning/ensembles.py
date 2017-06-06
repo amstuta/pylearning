@@ -7,9 +7,11 @@ from .trees import DecisionTreeRegressor
 from .trees import DecisionTreeClassifier
 
 
-class RandomForestRegressor:
+class RandomForest:
     """
-    Implementation of a random forest used for regression problems.
+    Base class for random forest algorithms.
+    This class is not meant to be instanciated, its subclasses should be used
+    instead.
     :param  nb_trees:       Number of decision trees to use
     :param  nb_samples:     Number of samples to give to each tree
     :param  max_depth:      Maximum depth of the trees
@@ -39,6 +41,17 @@ class RandomForestRegressor:
             self.trees = list(executor.map(self.train_tree, random_features))
 
 
+
+class RandomForestRegressor(RandomForest):
+    """
+    Implementation of a random forest used for regression problems.
+    :param  nb_trees:       Number of decision trees to use
+    :param  nb_samples:     Number of samples to give to each tree
+    :param  max_depth:      Maximum depth of the trees
+    :param  max_workers:    Maximum number of processes to use for training
+    """
+
+
     def train_tree(self, data):
         """
         Trains a single tree.
@@ -66,35 +79,14 @@ class RandomForestRegressor:
 
 
 
-class RandomForestClassifier:
+class RandomForestClassifier(RandomForest):
     """
+    Implementation of a random forest used for classification problems.
     :param nb_trees:       Number of decision trees to use
     :param nb_samples:     Number of samples to give to each tree
     :param max_depth:      Maximum depth of the trees
     :param max_workers:    Maximum number of processes to use for training
     """
-
-    def __init__(self, nb_trees, nb_samples, max_depth=-1, max_workers=1):
-        self.trees = []
-        self.nb_trees = nb_trees
-        self.nb_samples = nb_samples
-        self.max_depth = max_depth
-        self.max_workers = max_workers
-
-
-    def fit(self, features, targets):
-        """
-        Trains self.nb_trees number of decision trees.
-        :param features:    Array-like object of shape (nb_samples, nb_features)
-                            containing the training examples
-        :param targets:     Array-like object of shape (nb_samples) containing the
-                            training targets.
-        """
-        with ProcessPoolExecutor(max_workers=self.max_workers) as executor:
-            zipped = list(zip(features, targets))
-            random_features = \
-                [(x, random.sample(zipped, self.nb_samples)) for x in range(self.nb_trees)]
-            self.trees = list(executor.map(self.train_tree, random_features))
 
 
     def train_tree(self, data):
