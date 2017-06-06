@@ -32,12 +32,14 @@ class DecisionTreeRegressor:
         self.random_features = random_features
         self.min_leaf_examples = min_leaf_examples
 
-    """
-    :param  rows:       The data used to rain the decision tree. It must be a
-                        list of lists. The last vaue of each inner list is the
-                        value to predict.
-    """
+
     def fit(self, features, targets):
+        """
+        :param features:    Features used to train the tree.
+                            Array-like object of dimensions (nb_samples, nb_features)
+        :param targets:     Target values corresponding to the features.
+                            Array-like object of dimensions (n_samples)
+        """
         if len(features) < 1:
             raise ValueError("Not enough samples in the given dataset")
         if self.random_features:
@@ -45,40 +47,50 @@ class DecisionTreeRegressor:
             features = [self.get_features_subset(row) for row in features]
         self.root_node = self.build_tree(features, targets, self.max_depth)
 
-    """
-    Returns a prediction for the given features.
-    :param  features:   A list of values
-    """
+
     def predict(self, features):
+        """
+        Predict a value for the given features.
+        :param  features:   Array of features of dimension (nb_features)
+        :return:            Float value.
+        """
         if self.random_features:
             if not all(i in range(len(features))
                        for i in self.features_indexes):
                 raise ValueError("The given features don't match\
                                  the training set")
             features = self.get_features_subset(features)
-
         return self.classify(features, self.root_node)
 
-    """
-    Randomly selects indexes in the given list.
-    """
+
     def choose_random_features(self, row):
+        """
+        Randomly selects indexes in the given list. The number of indexes
+        chosen is the square root of the number of elements in the initial
+        list.
+        :param row: One-dimensional array
+        :return:    Array containing the chosen indexes
+        """
         nb_features = len(row) - 1
         return random.sample(range(nb_features), int(sqrt(nb_features)))
 
-    """
-    Returns the randomly selected values in the given features
-    """
+
     def get_features_subset(self, row):
+        """
+        Returns the randomly selected values in the given features.
+        :param row: One-dimensional array of features
+        """
         return [row[i] for i in self.features_indexes]
 
-    """
-    Divides the given dataset depending on the value at the given column index.
-    :param  rows:   The dataset
-    :param  column: The index of the column used to split data
-    :param  value:  The value used for the split
-    """
+
     def divide_set(self, features, targets, column, feature_value):
+        """
+        Divide the given dataset depending on the value at the given column index.
+        :param features:    Features of the dataset
+        :param targets:     Targets of the dataset
+        :param column:      The index of the column used to split data
+        :param value:       The value used for the split
+        """
         split_function = None
         if isinstance(feature_value, int) or isinstance(feature_value, float):
             split_function = lambda row: row[column] >= feature_value
@@ -90,15 +102,24 @@ class DecisionTreeRegressor:
 
         feat1, targs1 = [x[0] for x in set1], [x[1] for x in set1]
         feat2, targs2 = [x[0] for x in set2], [x[1] for x in set2]
-
         return feat1, targs1, feat2, targs2
 
 
     def mean_output(self, targets):
+        """
+        Calculate the mean value of the given list.
+        :param targets: One-dimensional array of floats or ints
+        :return:        Float value
+        """
         return sum(targets) / len(targets)
 
 
     def variance(self, targets):
+        """
+        Calculate the variance in the given list.
+        :param targets: One-dimensional array of float or ints
+        :return:        Float value
+        """
         if len(targets) == 0:
             return None
         mean = self.mean_output(targets)
@@ -106,15 +127,16 @@ class DecisionTreeRegressor:
         return variance
 
 
-    """
-    Recursively creates the decision tree by splitting the dataset until no
-    gain of information is added, or until the max depth is reached.
-    :param  rows:   The dataset
-    :param  func:   The function used to calculate the best split and stop
-                    condition
-    :param  depth:  The current depth in the tree
-    """
     def build_tree(self, features, targets, depth):
+        """
+        Recursively create the decision tree by splitting the dataset until there
+        is no real reduce in variance, or there is less examples in a node than
+        the minimum number of examples, or until the max depth is reached.
+        :param features:    Array-like object of features of shape (nb_samples, nb_features)
+        :param targets:     Array-like object of target values of shape (nb_samples)
+        :param depth:       The current depth in the tree
+        :return:            The root node of the constructed tree
+        """
         if len(features) == 0:
             return self.DecisionNode()
         if depth == 0:
@@ -155,12 +177,13 @@ class DecisionTreeRegressor:
             return self.DecisionNode(result=self.mean_output(targets))
 
 
-    """
-    Makes a prediction using the given features.
-    :param  observation:    The features to use to predict
-    :param  tree:           The current node
-    """
-    def classify(self, observation, tree):
+    def classify(self, observation, tree): # Change name
+        """
+        Makes a prediction using the given features.
+        :param  observation:    The features to use to predict
+        :param  tree:           The current node
+        :return:                Predicted value (float)
+        """
         if tree.result is not None:
             return tree.result
         else:
