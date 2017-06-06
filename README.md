@@ -16,7 +16,7 @@ This package is compatible with Python3+.
 All the algorithms available use the same simple interface described in the
 examples below.
 
-```python3
+```python
 # Basic classification example using a decision tree
 
 from pylearning.trees import DecisionTreeClassifier
@@ -33,7 +33,7 @@ test_feature, test_target = ...
 predicted_class = tree.predict(test_feature, test_target)
 ```
 
-```python3
+```python
 # Basic regression example using a random forest
 
 from pylearning.ensembles import RandomForestRegressor
