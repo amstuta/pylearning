@@ -9,6 +9,8 @@ The library includes four algorithms:
 - Decision tree regressor
 - Random forest regressor
 
+The two random forests algorithms use multithreading to train the trees in a
+parallelized fashion.
 This package is compatible with Python3+.
 
 ### Basic usage
