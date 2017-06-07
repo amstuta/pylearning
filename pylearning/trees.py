@@ -94,6 +94,31 @@ class DecisionTree:
         return feat1, targs1, feat2, targs2
 
 
+    def propagate(self, observation, tree):
+        """
+        Makes a prediction using the given features.
+        :param  observation:    The features to use to predict
+        :param  tree:           The current node
+        :return:                Predicted value (float)
+        """
+        if tree.result is not None:
+            return tree.result
+        else:
+            v = observation[tree.col]
+            branch = None
+            if isinstance(v, int) or isinstance(v, float):
+                if v >= tree.value:
+                    branch = tree.tb
+                else:
+                    branch = tree.fb
+            else:
+                if v == tree.value:
+                    branch = tree.tb
+                else:
+                    branch = tree.fb
+            return self.propagate(observation, branch)
+
+
 
 class DecisionTreeRegressor(DecisionTree):
     """
@@ -191,31 +216,6 @@ class DecisionTreeRegressor(DecisionTree):
             return DecisionNode(result=self.mean_output(targets))
 
 
-    def propagate(self, observation, tree):
-        """
-        Makes a prediction using the given features.
-        :param  observation:    The features to use to predict
-        :param  tree:           The current node
-        :return:                Predicted value (float)
-        """
-        if tree.result is not None:
-            return tree.result
-        else:
-            v = observation[tree.col]
-            branch = None
-            if isinstance(v, int) or isinstance(v, float):
-                if v >= tree.value:
-                    branch = tree.tb
-                else:
-                    branch = tree.fb
-            else:
-                if v == tree.value:
-                    branch = tree.tb
-                else:
-                    branch = tree.fb
-            return self.propagate(observation, branch)
-
-
 
 class DecisionTreeClassifier(DecisionTree):
     """
@@ -287,7 +287,7 @@ class DecisionTreeClassifier(DecisionTree):
         if len(features) == 0:
             return DecisionNode()
         if depth == 0:
-            return DecisionNode(result=self.unique_counts(targets))
+            return DecisionNode(result=max(self.unique_counts(targets)))
 
         current_score = func(targets)
         best_gain = 0.0
@@ -312,29 +312,4 @@ class DecisionTreeClassifier(DecisionTree):
             return DecisionNode(col=best_criteria[0], value=best_criteria[1],
                                 tb=left_branch, fb=right_branch)
         else:
-            return DecisionNode(result=self.unique_counts(targets))
-
-
-    def propagate(self, observation, tree):
-        """
-        Makes a prediction using the given features.
-        :param  observation:    The features to use to predict
-        :param  tree:           The current node
-        :return:                Predicted class
-        """
-        if tree.result is not None:
-            return list(tree.result.keys())[0]
-        else:
-            v = observation[tree.col]
-            branch = None
-            if isinstance(v, int) or isinstance(v, float):
-                if v >= tree.value:
-                    branch = tree.tb
-                else:
-                    branch = tree.fb
-            else:
-                if v == tree.value:
-                    branch = tree.tb
-                else:
-                    branch = tree.fb
-            return self.propagate(observation, branch)
+            return DecisionNode(result=max(self.unique_counts(targets)))
