@@ -1,2 +1,9 @@
 *.pyc
 __pycache__
+build/
+dist/
+pylearning.egg-info
+deploy.sh
+income.csv
+user_cpu.data
+rf_example.py
