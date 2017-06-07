@@ -12,7 +12,7 @@ class DecisionTree:
 
 
     def __init__(self, max_depth=-1, min_leaf_examples=6,
-                max_split_features="auto", criterion=None):
+                max_split_features="auto", criterion="entropy"):
         self.root_node = None
         self.max_depth = max_depth
         self.min_leaf_examples = min_leaf_examples
@@ -25,7 +25,7 @@ class DecisionTree:
             raise ValueError("Argument max_split_features must be 'auto', \
                             'sqrt', 'log2', an int or None")
 
-        self.criterion = criterion if criterion else self.entropy
+        self.criterion = self.entropy
 
 
     def fit(self, features, targets):
@@ -257,7 +257,8 @@ class DecisionTreeClassifier(DecisionTree):
                                    - If 'log2', considered = log2(nb_features)
                                    - If None, all features will be considered
     :param  criterion:          The function used to split data at each node of the
-                                tree. If None, the criterion used is entropy.
+                                tree. Right now, the only available criterion
+                                is entropy.
     """
 
 

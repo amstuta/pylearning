@@ -14,7 +14,7 @@ class RandomForest:
 
     def __init__(self, nb_trees=50, nb_samples=None, max_depth=-1,
                 max_workers=1, min_leaf_examples=6, max_split_features="auto",
-                split_criterion=None):
+                split_criterion="entropy"):
         self.trees = []
         self.nb_trees = nb_trees
         self.nb_samples = nb_samples
@@ -68,7 +68,7 @@ class RandomForestRegressor(RandomForest):
                                      considered = sqrt(nb_features)
                                    - If 'log2', considered = log2(nb_features)
                                    - If None, all features will be considered
-    :param  criterion:          Not used here
+    :param  split_criterion:    Not used here
     """
 
 
@@ -118,8 +118,9 @@ class RandomForestClassifier(RandomForest):
                                      considered = sqrt(nb_features)
                                    - If 'log2', considered = log2(nb_features)
                                    - If None, all features will be considered
-    :param  criterion:          The function used to split data at each node of the
-                                tree. If None, the criterion used is entropy.
+    :param  split_criterion:    The function used to split data at each node of the
+                                tree. Right now, the only available criterion
+                                is entropy (default value).
     """
 
 
