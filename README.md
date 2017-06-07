@@ -54,6 +54,8 @@ test_feature, test_target = ...
 value_predicted = rf.predict(test_feature, test_target)
 ```
 
+A complete documentation of the API is available [here](https://pythonhosted.org/pylearning/).
+
 ### Installation
 
 Pylearning has no external dependencies. It can be installed simply using Pypy:
