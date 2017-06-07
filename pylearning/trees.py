@@ -6,24 +6,51 @@ from .node import DecisionNode
 
 class DecisionTree:
     """
-    Base class for decision trees.
-    This class is not meant to be instanciated, its subclasses should be used
-    instead.
+    Base class for decision trees. This class is not meant to be instanciated,
+    only its subclasses should be used.
     """
+
+
+    def __init__(self, max_depth=-1, random_features=False,
+                 min_leaf_examples=6, max_split_features="auto"):
+        self.root_node = None
+        self.max_depth = max_depth
+        self.min_leaf_examples = min_leaf_examples
+
+        if max_split_features in ["auto","sqrt","log2"] or \
+            isinstance(max_split_features, int) or max_split_features is None:
+            self.max_split_features = max_split_features
+            self.considered_features = None
+        else:
+            raise ValueError("Argument max_split_features must be 'auto', \
+                            'sqrt', 'log2', an int or None")
+
 
     def predict(self, features):
         """
         Predict a value for the given features.
         :param features:    Array of features of dimension (nb_features)
-        :return:            Float value.
+        :return:            Float value or predicted class
         """
-        if self.random_features:
-            if not all(i in range(len(features))
-                       for i in self.features_indexes):
-                raise ValueError("The given features don't match\
-                                 the training set")
-            features = self.get_features_subset(features)
         return self.propagate(features, self.root_node)
+
+
+    def set_number_features_evaluated_split(self, row):
+        """
+        Sets the number of considered features at each split depending on the
+        max_split_features parameter.
+        :param row: A single row of the features of shape (nb_features)
+        """
+        if isinstance(self.max_split_features, int):
+            self.considered_features = self.max_split_features if \
+                self.max_split_features <= len(row) else len(row)
+        elif isinstance(self.max_split_features, str):
+            if self.max_split_features in ['auto','sqrt']:
+                self.considered_features = int(sqrt(len(row)))
+            elif self.max_split_features == 'log2':
+                self.considered_features = int(log2(len(row)))
+        else:
+            self.considered_features = len(row)
 
 
     def choose_random_features(self, row):
@@ -34,8 +61,7 @@ class DecisionTree:
         :param row: One-dimensional array
         :return:    Array containing the chosen indexes
         """
-        nb_features = len(row)
-        return random.sample(range(nb_features), int(sqrt(nb_features)))
+        return random.sample(range(len(row)), self.considered_features)
 
 
     def get_features_subset(self, row):
@@ -72,21 +98,15 @@ class DecisionTree:
 class DecisionTreeRegressor(DecisionTree):
     """
     :param  max_depth:          Maximum number of splits during training
-    :param  random_features:    If False, all the features will be used to
-                                train and predict. Otherwise, a random set of
-                                size sqrt(nb features) will be chosen in the
-                                features.
-                                Usually, this option is used in a random
-                                forest.
-    :param min_leaf_examples:   Minimum number of examples in a meaf node.
+    :param min_leaf_examples:   Minimum number of examples in a leaf node.
+    :param max_split_features:  Maximum number of features considered at each
+                                split (default='auto') :
+                                   - If int, the given number of will be used
+                                   - If 'auto' or 'sqrt', number of features
+                                     considered = sqrt(nb_features)
+                                   - If 'log2', considered = log2(nb_features)
+                                   - If None, all features will be considered
     """
-
-    def __init__(self, max_depth=-1, random_features=False, min_leaf_examples=6):
-        self.root_node = None
-        self.max_depth = max_depth
-        self.features_indexes = []
-        self.random_features = random_features
-        self.min_leaf_examples = min_leaf_examples
 
 
     def fit(self, features, targets):
@@ -98,9 +118,7 @@ class DecisionTreeRegressor(DecisionTree):
         """
         if len(features) < 1:
             raise ValueError("Not enough samples in the given dataset")
-        if self.random_features:
-            self.features_indexes = self.choose_random_features(features[0])
-            features = [self.get_features_subset(row) for row in features]
+        self.set_number_features_evaluated_split(features[0])
         self.root_node = self.build_tree(features, targets, self.max_depth)
 
 
@@ -145,7 +163,8 @@ class DecisionTreeRegressor(DecisionTree):
         best_criteria = None
         best_sets = None
 
-        for column in range(len(features[0])):
+        considered_features = self.choose_random_features(features[0])
+        for column in considered_features:
             column_values = [feature[column] for feature in features]
             for feature_value in column_values:
                 feats1, targs1, feats2, targs2 = \
@@ -201,19 +220,15 @@ class DecisionTreeRegressor(DecisionTree):
 class DecisionTreeClassifier(DecisionTree):
     """
     :param  max_depth:          Maximum number of splits during training
-    :param  random_features:    If False, all the features will be used to
-                                train and predict. Otherwise, a random set of
-                                size sqrt(nb features) will be chosen in the
-                                features.
-                                Usually, this option is used in a random
-                                forest.
+    :param min_leaf_examples:   Minimum number of examples in a leaf node.
+    :param max_split_features:  Maximum number of features considered at each
+                                split (default='auto') :
+                                   - If int, the given number of will be used
+                                   - If 'auto' or 'sqrt', number of features
+                                     considered = sqrt(nb_features)
+                                   - If 'log2', considered = log2(nb_features)
+                                   - If None, all features will be considered
     """
-
-    def __init__(self, max_depth=-1, random_features=False):
-        self.root_node = None
-        self.max_depth = max_depth
-        self.features_indexes = []
-        self.random_features = random_features
 
 
     def fit(self, features, targets, criterion=None):
@@ -229,9 +244,7 @@ class DecisionTreeClassifier(DecisionTree):
             raise ValueError("Not enough samples in the given dataset")
         if not criterion:
             criterion = self.entropy
-        if self.random_features:
-            self.features_indexes = self.choose_random_features(features[0])
-            features = [self.get_features_subset(row) for row in features]
+        self.set_number_features_evaluated_split(features[0])
         self.root_node = self.build_tree(features, targets, criterion, self.max_depth)
 
 
@@ -280,13 +293,11 @@ class DecisionTreeClassifier(DecisionTree):
         best_gain = 0.0
         best_criteria = None
         best_sets = None
-        column_count = len(features[0])
 
-        for col in range(column_count):
-            column_values = {}
-            for row in features:
-                column_values[row[col]] = 1
-            for value in column_values.keys():
+        considered_features = self.choose_random_features(features[0])
+        for col in considered_features:
+            column_values = set([row[col] for row in features])
+            for value in column_values:
                 feats1, targs1, feats2, targs2 = \
                     self.divide_set(features, targets, col, value)
                 p = float(len(feats1)) / len(features)
