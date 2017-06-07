@@ -65,6 +65,7 @@ pip install pylearning
 
 The core functionalities of trees and random forest are implemented in this
 project, however there are many improvements that could be added:
+- gini criterion for splitting nodes
 - pruning
 - ability to split a node into an arbitrary number of child nodes
 - optimizations to reduce time and memory consumption
