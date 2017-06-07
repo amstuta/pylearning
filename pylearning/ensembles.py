@@ -12,8 +12,8 @@ class RandomForest:
     instanciated, ont its subclasses should be used.
     """
 
-    def __init__(self, nb_trees, nb_samples, max_depth=-1, max_workers=1,\
-                min_leaf_examples=6, max_split_features="auto",
+    def __init__(self, nb_trees=50, nb_samples=None, max_depth=-1,
+                max_workers=1, min_leaf_examples=6, max_split_features="auto",
                 split_criterion=None):
         self.trees = []
         self.nb_trees = nb_trees
@@ -41,6 +41,8 @@ class RandomForest:
         :param targets:     Array-like object of shape (nb_samples) containing the
                             training targets.
         """
+        if not self.nb_samples:
+            self.nb_samples = int(len(features) / 10)
         with ProcessPoolExecutor(max_workers=self.max_workers) as executor:
             zipped = list(zip(features, targets))
             random_features = \
@@ -53,11 +55,12 @@ class RandomForestRegressor(RandomForest):
     """
     Implementation of a random forest used for regression problems.
 
-    :param  nb_trees:           Number of decision trees to use
-    :param  nb_samples:         Number of samples to give to each tree
-    :param  max_depth:          Maximum depth of the trees
+    :param  nb_trees:           Number of decision trees to use (default=50)
+    :param  nb_samples:         Number of samples to give to each tree. If None,
+                                1/10th of the dataset will be given to each tree
+    :param  max_depth:          Maximum depth of the trees (default=-1)
     :param  max_workers:        Maximum number of processes to use for training
-    :param  min_leaf_examples:  Minimum number of examples in a leaf node.
+    :param  min_leaf_examples:  Minimum number of examples in a leaf node
     :param  max_split_features: Maximum number of features considered at each
                                 split (default='auto') :
                                    - If int, the given number of will be used
@@ -102,11 +105,12 @@ class RandomForestClassifier(RandomForest):
     """
     Implementation of a random forest used for classification problems.
 
-    :param  nb_trees:           Number of decision trees to use
-    :param  nb_samples:         Number of samples to give to each tree
-    :param  max_depth:          Maximum depth of the trees
+    :param  nb_trees:           Number of decision trees to use (default=50)
+    :param  nb_samples:         Number of samples to give to each tree. If None,
+                                1/10th of the dataset will be given to each tree
+    :param  max_depth:          Maximum depth of the trees (default=-1)
     :param  max_workers:        Maximum number of processes to use for training
-    :param  min_leaf_examples:  Minimum number of examples in a leaf node.
+    :param  min_leaf_examples:  Minimum number of examples in a leaf node
     :param  max_split_features: Maximum number of features considered at each
                                 split (default='auto') :
                                    - If int, the given number of will be used
