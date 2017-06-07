@@ -1,15 +1,16 @@
 import logging
 import random
+import abc
 from concurrent.futures import ProcessPoolExecutor
 
 from .trees import DecisionTreeRegressor
 from .trees import DecisionTreeClassifier
 
 
-class RandomForest:
+class RandomForest(metaclass=abc.ABCMeta):
     """
-    Base class for random forest algorithms. This class is not meant to be
-    instanciated, ont its subclasses should be used.
+    Abstract base class for random forest algorithms. This class is not meant
+    to be instanciated, ont its subclasses can be used.
     """
 
     def __init__(self, nb_trees=50, nb_samples=None, max_depth=-1,
@@ -46,6 +47,15 @@ class RandomForest:
                 [(x, random.sample(zipped, self.nb_samples)) for x in range(self.nb_trees)]
             self.trees = list(executor.map(self.train_tree, random_features))
 
+
+    @abc.abstractmethod
+    def predict(self, feature):
+        pass
+
+
+    @abc.abstractmethod
+    def train_tree(self, data):
+        pass
 
 
 class RandomForestRegressor(RandomForest):

@@ -1,13 +1,14 @@
 import random
+import abc
 from math import log2, sqrt
 
 from .node import DecisionNode
 
 
-class DecisionTree:
+class DecisionTree(metaclass=abc.ABCMeta):
     """
-    Base class for decision trees. This class is not meant to be instanciated,
-    only its subclasses should be used.
+    Abstract base class for decision trees. This class is not meant to be
+    instanciated,only its subclasses can be used.
     """
 
 
@@ -46,6 +47,12 @@ class DecisionTree:
         :return:            Float value or predicted class
         """
         return self.propagate(features, self.root_node)
+
+
+    @abc.abstractmethod
+    def build_tree(self, features, targets, depth):
+        """ Abstract method used to build the tree """
+        pass
 
 
     def set_number_features_evaluated_split(self, row):
