@@ -13,8 +13,7 @@ class RandomForest:
     """
 
     def __init__(self, nb_trees=50, nb_samples=None, max_depth=-1,
-                max_workers=1, min_leaf_examples=6, max_split_features="auto",
-                split_criterion="entropy"):
+                max_workers=1, min_leaf_examples=6, max_split_features="auto"):
         self.trees = []
         self.nb_trees = nb_trees
         self.nb_samples = nb_samples
@@ -29,8 +28,6 @@ class RandomForest:
         else:
             raise ValueError("Argument max_split_features must be 'auto', \
                             'sqrt', 'log2', an int or None")
-
-        self.split_criterion = split_criterion
 
 
     def fit(self, features, targets):
@@ -68,7 +65,6 @@ class RandomForestRegressor(RandomForest):
                                      considered = sqrt(nb_features)
                                    - If 'log2', considered = log2(nb_features)
                                    - If None, all features will be considered
-    :param  split_criterion:    Not used here
     """
 
 
@@ -118,9 +114,6 @@ class RandomForestClassifier(RandomForest):
                                      considered = sqrt(nb_features)
                                    - If 'log2', considered = log2(nb_features)
                                    - If None, all features will be considered
-    :param  split_criterion:    The function used to split data at each node of the
-                                tree. Right now, the only available criterion
-                                is entropy (default value).
     """
 
 
@@ -133,9 +126,8 @@ class RandomForestClassifier(RandomForest):
         """
         logging.info('Training tree {}'.format(data[0] + 1))
         tree = DecisionTreeClassifier(max_depth=self.max_depth,
-                                    min_leaf_examples=self.min_leaf_examples,
-                                    max_split_features=self.max_split_features,
-                                    criterion=self.split_criterion)
+                                      min_leaf_examples=self.min_leaf_examples,
+                                      max_split_features=self.max_split_features)
         features, targets = [x[0] for x in data[1]], [x[1] for x in data[1]]
         tree.fit(features, targets)
         return tree

@@ -11,8 +11,7 @@ class DecisionTree:
     """
 
 
-    def __init__(self, max_depth=-1, min_leaf_examples=6,
-                max_split_features="auto", criterion="entropy"):
+    def __init__(self, max_depth=-1, min_leaf_examples=6, max_split_features="auto"):
         self.root_node = None
         self.max_depth = max_depth
         self.min_leaf_examples = min_leaf_examples
@@ -24,8 +23,6 @@ class DecisionTree:
         else:
             raise ValueError("Argument max_split_features must be 'auto', \
                             'sqrt', 'log2', an int or None")
-
-        self.criterion = self.entropy
 
 
     def fit(self, features, targets):
@@ -96,9 +93,9 @@ class DecisionTree:
         """
         results = self.unique_counts(targets)
         ent = 0.0
-        for r in results.keys():
-            p = float(results[r]) / len(targets)
-            ent = ent - p * log2(p)
+        for val in results.values():
+            p = float(val) / len(targets)
+            ent -= p * log2(p)
         return ent
 
 
@@ -193,7 +190,6 @@ class DecisionTreeRegressor(DecisionTree):
                                      considered = sqrt(nb_features)
                                    - If 'log2', considered = log2(nb_features)
                                    - If None, all features will be considered
-    :param  criterion:          Not used in this class
     """
 
 
@@ -256,9 +252,6 @@ class DecisionTreeClassifier(DecisionTree):
                                      considered = sqrt(nb_features)
                                    - If 'log2', considered = log2(nb_features)
                                    - If None, all features will be considered
-    :param  criterion:          The function used to split data at each node of the
-                                tree. Right now, the only available criterion
-                                is entropy.
     """
 
 
@@ -278,7 +271,7 @@ class DecisionTreeClassifier(DecisionTree):
         if depth == 0:
             return DecisionNode(result=max(self.unique_counts(targets)))
 
-        current_score = self.criterion(targets)
+        current_score = self.entropy(targets)
         best_gain = 0.0
         best_criteria = None
         best_sets = None
@@ -290,11 +283,13 @@ class DecisionTreeClassifier(DecisionTree):
                 feats1, targs1, feats2, targs2 = \
                     self.divide_set(features, targets, col, value)
                 p = float(len(feats1)) / len(features)
-                gain = current_score - p * self.criterion(targs1) - (1 - p) * self.criterion(targs2)
+                gain = current_score - p * self.entropy(targs1) - \
+                        (1 - p) * self.entropy(targs2)
                 if gain > best_gain and len(feats1) > 0 and len(feats2) > 0:
                     best_gain = gain
                     best_criteria = (col, value)
                     best_sets = ((feats1, targs1), (feats2, targs2))
+
         if best_gain > 0:
             left_branch = self.build_tree(best_sets[0][0], best_sets[0][1], depth - 1)
             right_branch = self.build_tree(best_sets[1][0], best_sets[1][1], depth - 1)
