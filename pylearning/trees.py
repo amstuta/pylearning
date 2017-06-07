@@ -11,8 +11,8 @@ class DecisionTree:
     """
 
 
-    def __init__(self, max_depth=-1, random_features=False,
-                 min_leaf_examples=6, max_split_features="auto"):
+    def __init__(self, max_depth=-1, min_leaf_examples=6,
+                max_split_features="auto", criterion=None):
         self.root_node = None
         self.max_depth = max_depth
         self.min_leaf_examples = min_leaf_examples
@@ -24,6 +24,8 @@ class DecisionTree:
         else:
             raise ValueError("Argument max_split_features must be 'auto', \
                             'sqrt', 'log2', an int or None")
+
+        self.criterion = criterion if criterion else self.entropy
 
 
     def predict(self, features):
@@ -70,6 +72,20 @@ class DecisionTree:
         :param row: One-dimensional array of features
         """
         return [row[i] for i in self.features_indexes]
+
+
+    def entropy(self, targets):
+        """
+        Returns the entropy in the given rows.
+        :param targets:     1D array-like targets
+        :return:            Float value of entropy
+        """
+        results = self.unique_counts(targets)
+        ent = 0.0
+        for r in results.keys():
+            p = float(results[r]) / len(targets)
+            ent = ent - p * log2(p)
+        return ent
 
 
     def divide_set(self, features, targets, column, feature_value):
@@ -131,11 +147,13 @@ class DecisionTreeRegressor(DecisionTree):
                                      considered = sqrt(nb_features)
                                    - If 'log2', considered = log2(nb_features)
                                    - If None, all features will be considered
+    :param  criterion:          Not used in this class
     """
 
 
     def fit(self, features, targets):
         """
+        Trains the algorithm using the given dataset.
         :param features:    Features used to train the tree.
                             Array-like object of dimensions (nb_samples, nb_features)
         :param targets:     Target values corresponding to the features.
@@ -228,11 +246,14 @@ class DecisionTreeClassifier(DecisionTree):
                                      considered = sqrt(nb_features)
                                    - If 'log2', considered = log2(nb_features)
                                    - If None, all features will be considered
+    :param  criterion:          The function used to split data at each node of the
+                                tree. If None, the criterion used is entropy.
     """
 
 
-    def fit(self, features, targets, criterion=None):
+    def fit(self, features, targets):
         """
+        Trains the algorithm using the given dataset.
         :param features:    Features used to train the tree.
                             Array-like object of dimensions (nb_samples, nb_features)
         :param targets:     Target values corresponding to the features.
@@ -242,10 +263,8 @@ class DecisionTreeClassifier(DecisionTree):
         """
         if len(features) < 1:
             raise ValueError("Not enough samples in the given dataset")
-        if not criterion:
-            criterion = self.entropy
         self.set_number_features_evaluated_split(features[0])
-        self.root_node = self.build_tree(features, targets, criterion, self.max_depth)
+        self.root_node = self.build_tree(features, targets, self.max_depth)
 
 
     def unique_counts(self, targets):
@@ -258,29 +277,14 @@ class DecisionTreeClassifier(DecisionTree):
         return counts
 
 
-    def entropy(self, targets):
-        """
-        Returns the entropy in the given rows.
-        :param targets:     1D array-like targets
-        :return:            Float value of entropy
-        """
-        results = self.unique_counts(targets)
-        ent = 0.0
-        for r in results.keys():
-            p = float(results[r]) / len(targets)
-            ent = ent - p * log2(p)
-        return ent
-
-
-    def build_tree(self, features, targets, func, depth):
+    def build_tree(self, features, targets, depth):
         """
         Recursively create the decision tree by splitting the dataset until there
         is no real reduce in variance, or there is less examples in a node than
         the minimum number of examples, or until the max depth is reached.
+
         :param features:    Array-like object of features of shape (nb_samples, nb_features)
         :param targets:     Array-like object of target values of shape (nb_samples)
-        :param func:        The function used to calculate the best split and stop
-                            condition
         :param depth:       The current depth in the tree
         :return:            The root node of the constructed tree
         """
@@ -289,7 +293,7 @@ class DecisionTreeClassifier(DecisionTree):
         if depth == 0:
             return DecisionNode(result=max(self.unique_counts(targets)))
 
-        current_score = func(targets)
+        current_score = self.criterion(targets)
         best_gain = 0.0
         best_criteria = None
         best_sets = None
@@ -301,14 +305,14 @@ class DecisionTreeClassifier(DecisionTree):
                 feats1, targs1, feats2, targs2 = \
                     self.divide_set(features, targets, col, value)
                 p = float(len(feats1)) / len(features)
-                gain = current_score - p * func(targs1) - (1 - p) * func(targs2)
+                gain = current_score - p * self.criterion(targs1) - (1 - p) * self.criterion(targs2)
                 if gain > best_gain and len(feats1) > 0 and len(feats2) > 0:
                     best_gain = gain
                     best_criteria = (col, value)
                     best_sets = ((feats1, targs1), (feats2, targs2))
         if best_gain > 0:
-            left_branch = self.build_tree(best_sets[0][0], best_sets[0][1], func, depth - 1)
-            right_branch = self.build_tree(best_sets[1][0], best_sets[1][1], func, depth - 1)
+            left_branch = self.build_tree(best_sets[0][0], best_sets[0][1], depth - 1)
+            right_branch = self.build_tree(best_sets[1][0], best_sets[1][1], depth - 1)
             return DecisionNode(col=best_criteria[0], value=best_criteria[1],
                                 tb=left_branch, fb=right_branch)
         else:
