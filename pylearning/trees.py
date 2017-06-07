@@ -28,6 +28,20 @@ class DecisionTree:
         self.criterion = criterion if criterion else self.entropy
 
 
+    def fit(self, features, targets):
+        """
+        Trains the algorithm using the given dataset.
+        :param features:    Features used to train the tree.
+                            Array-like object of dimensions (nb_samples, nb_features)
+        :param targets:     Target values corresponding to the features.
+                            Array-like object of dimensions (n_samples)
+        """
+        if len(features) < 1:
+            raise ValueError("Not enough samples in the given dataset")
+        self.set_number_features_evaluated_split(features[0])
+        self.root_node = self.build_tree(features, targets, self.max_depth)
+
+
     def predict(self, features):
         """
         Predict a value for the given features.
@@ -86,6 +100,38 @@ class DecisionTree:
             p = float(results[r]) / len(targets)
             ent = ent - p * log2(p)
         return ent
+
+
+    def mean_output(self, targets):
+        """
+        Calculate the mean value of the given list.
+        :param targets: One-dimensional array of floats or ints
+        :return:        Float value
+        """
+        return sum(targets) / len(targets)
+
+
+    def variance(self, targets):
+        """
+        Calculate the variance in the given list.
+        :param targets: One-dimensional array of float or ints
+        :return:        Float value
+        """
+        if len(targets) == 0:
+            return None
+        mean = self.mean_output(targets)
+        variance = sum([(x - mean)**2 for x in targets])
+        return variance
+
+
+    def unique_counts(self, targets):
+        """
+        Returns the occurence of each result in the given dataset.
+        :param targets:     1D array-like targets
+        :return:            Dictionary of target => number of occurences
+        """
+        counts = {k: targets.count(k) for k in set(targets)}
+        return counts
 
 
     def divide_set(self, features, targets, column, feature_value):
@@ -151,42 +197,6 @@ class DecisionTreeRegressor(DecisionTree):
     """
 
 
-    def fit(self, features, targets):
-        """
-        Trains the algorithm using the given dataset.
-        :param features:    Features used to train the tree.
-                            Array-like object of dimensions (nb_samples, nb_features)
-        :param targets:     Target values corresponding to the features.
-                            Array-like object of dimensions (n_samples)
-        """
-        if len(features) < 1:
-            raise ValueError("Not enough samples in the given dataset")
-        self.set_number_features_evaluated_split(features[0])
-        self.root_node = self.build_tree(features, targets, self.max_depth)
-
-
-    def mean_output(self, targets):
-        """
-        Calculate the mean value of the given list.
-        :param targets: One-dimensional array of floats or ints
-        :return:        Float value
-        """
-        return sum(targets) / len(targets)
-
-
-    def variance(self, targets):
-        """
-        Calculate the variance in the given list.
-        :param targets: One-dimensional array of float or ints
-        :return:        Float value
-        """
-        if len(targets) == 0:
-            return None
-        mean = self.mean_output(targets)
-        variance = sum([(x - mean)**2 for x in targets])
-        return variance
-
-
     def build_tree(self, features, targets, depth):
         """
         Recursively create the decision tree by splitting the dataset until there
@@ -249,32 +259,6 @@ class DecisionTreeClassifier(DecisionTree):
     :param  criterion:          The function used to split data at each node of the
                                 tree. If None, the criterion used is entropy.
     """
-
-
-    def fit(self, features, targets):
-        """
-        Trains the algorithm using the given dataset.
-        :param features:    Features used to train the tree.
-                            Array-like object of dimensions (nb_samples, nb_features)
-        :param targets:     Target values corresponding to the features.
-                            Array-like object of dimensions (n_samples)
-        :param  criterion:  The function used to split data at each node of the
-                            tree. If None, the criterion used is entropy.
-        """
-        if len(features) < 1:
-            raise ValueError("Not enough samples in the given dataset")
-        self.set_number_features_evaluated_split(features[0])
-        self.root_node = self.build_tree(features, targets, self.max_depth)
-
-
-    def unique_counts(self, targets):
-        """
-        Returns the occurence of each result in the given dataset.
-        :param targets:     1D array-like targets
-        :return:            Dictionary of target => number of occurences
-        """
-        counts = {k: targets.count(k) for k in set(targets)}
-        return counts
 
 
     def build_tree(self, features, targets, depth):
