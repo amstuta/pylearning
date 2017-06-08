@@ -3,8 +3,8 @@ import random
 import abc
 from concurrent.futures import ProcessPoolExecutor
 
-from .trees import DecisionTreeRegressor
-from .trees import DecisionTreeClassifier
+from ..trees import DecisionTreeRegressor
+from ..trees import DecisionTreeClassifier
 
 
 class RandomForest(metaclass=abc.ABCMeta):
