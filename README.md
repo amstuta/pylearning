@@ -1,6 +1,7 @@
 ## Pylearning: a Python library to use decision trees and random forest learners
 
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](https://github.com/amstuta/pylearning/blob/master/LICENSE.md)
+[![PyPI](https://img.shields.io/pypi/pyversions/pylearning.svg)]()
 
 Pylearning is a high-level machine learning package designed to easily prototype
 and implement data analysis programs.
