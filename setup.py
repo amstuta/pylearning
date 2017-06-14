@@ -10,7 +10,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as fd:
 setup(
     name='pylearning',
 
-    version='2.1.0b1',
+    version='2.2.0b1',
 
     description='Simple high-level library to use decision trees and random forest learners',
     long_description=long_description,
