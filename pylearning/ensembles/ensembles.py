@@ -1,6 +1,8 @@
 import logging
 import random
 import abc
+import numpy as np
+from operator import itemgetter
 from concurrent.futures import ProcessPoolExecutor
 
 from ..trees import DecisionTreeRegressor
@@ -42,9 +44,16 @@ class RandomForest(metaclass=abc.ABCMeta):
         if not self.nb_samples:
             self.nb_samples = int(len(features) / 10)
         with ProcessPoolExecutor(max_workers=self.max_workers) as executor:
-            zipped = list(zip(features, targets))
-            random_features = \
-                [(x, random.sample(zipped, self.nb_samples)) for x in range(self.nb_trees)]
+            random_features = []
+            for x in range(self.nb_trees):
+                idxs = np.random.choice(np.arange(len(features)), self.nb_samples, replace=True)
+                try:
+                    chosen_features = itemgetter(*idxs)(features)
+                    chosen_targets = itemgetter(*idxs)(targets)
+                except:
+                    chosen_features = features.iloc[idxs].as_matrix()
+                    chosen_targets = targets.iloc[idxs].as_matrix()
+                random_features.append((x, chosen_features, chosen_targets))
             self.trees = list(executor.map(self.train_tree, random_features))
 
 
@@ -89,7 +98,7 @@ class RandomForestRegressor(RandomForest):
         tree = DecisionTreeRegressor(max_depth=self.max_depth,
                                     min_leaf_examples=self.min_leaf_examples,
                                     max_split_features=self.max_split_features)
-        features, targets = [x[0] for x in data[1]], [x[1] for x in data[1]]
+        features , targets = data[1], data[2]
         tree.fit(features, targets)
         return tree
 
@@ -138,7 +147,7 @@ class RandomForestClassifier(RandomForest):
         tree = DecisionTreeClassifier(max_depth=self.max_depth,
                                       min_leaf_examples=self.min_leaf_examples,
                                       max_split_features=self.max_split_features)
-        features, targets = [x[0] for x in data[1]], [x[1] for x in data[1]]
+        features , targets = data[1], data[2]
         tree.fit(features, targets)
         return tree
 

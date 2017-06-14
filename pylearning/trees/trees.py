@@ -1,6 +1,7 @@
 import random
 import abc
 from math import log2, sqrt
+from numbers import Number
 
 from .node import DecisionNode
 
@@ -147,7 +148,7 @@ class DecisionTree(metaclass=abc.ABCMeta):
         :param value:       The value used for the split
         """
         split_function = None
-        if isinstance(feature_value, int) or isinstance(feature_value, float):
+        if isinstance(feature_value, Number):
             split_function = lambda row: row[column] >= feature_value
         else:
             split_function = lambda row: row[column] == feature_value
@@ -172,7 +173,7 @@ class DecisionTree(metaclass=abc.ABCMeta):
         else:
             v = observation[tree.col]
             branch = None
-            if isinstance(v, int) or isinstance(v, float):
+            if isinstance(v, Number):
                 if v >= tree.value:
                     branch = tree.tb
                 else:
