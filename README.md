@@ -59,7 +59,7 @@ A complete documentation of the API is available [here](https://pythonhosted.org
 
 ### Installation
 
-Pylearning has no external dependencies. It can be installed simply using Pypy:
+Pylearning requires to have numpy installed. It can be installed simply using Pypy:
 ```sh
 pip3 install pylearning
 # OR
