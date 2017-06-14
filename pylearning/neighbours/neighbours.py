@@ -16,7 +16,8 @@ class KNN(metaclass=abc.ABCMeta):
     def get_distances(self, feat):
         """
         Calculates the distances between the given feature and all the instances
-        saved during training.
+        saved during training. The calculation method is the L2 Euclidean
+        distance.
         :param  feat:   An array-like object of shape (nb_features)
         :return:        A numpy array of shape (nb_training_examples)
         """
@@ -39,6 +40,14 @@ class KNNClassification(KNN):
 
 
     def fit(self, features, targets):
+        """
+        Trains the algorithm on the given dataset. For each class, the algorithm
+        calculates a center that is the mean of all examples of the class. It
+        only saves self.samples_per_class values for each class.
+        :param  features:   An array-like object of shape (nb_samples, nb_features)
+        :param  targets:    An array-like object of shape (nb_samples) of output
+                            values
+        """
         groups = list(set(features))
         zipped = list(zip(features, targets))
         data = {a : np.array([b[1] for b in zipped if b[0] == a]) for a in groups}
@@ -58,8 +67,13 @@ class KNNClassification(KNN):
         self.targets = np.array(targets)
 
 
-    def predict(self, X):
-        distances = self.get_distances(X)
+    def predict(self, feat):
+        """
+        Predicts an output for the given feature.
+        :param  feat:   Array-like object of shape (nb_samples)
+        :return:        The most represented class in the neighbours
+        """
+        distances = self.get_distances(feat)
         pred = np.zeros(len(distances))
         for i in range(len(distances)):
             labels = self.targets[np.argsort(distances[i])].flatten()
@@ -79,12 +93,23 @@ class KNNRegression(KNN):
 
 
     def fit(self, features, targets):
+        """
+        Trains the algorithm on the given dataset.
+        :param  features:   An array-like object of shape (nb_samples, nb_features)
+        :param  targets:    An array-like object of shape (nb_samples) of output
+                            values
+        """
         self.features = features
         self.targets = targets
 
 
-    def predict(self, X):
-        distances = self.get_distances(X)
+    def predict(self, feat):
+        """
+        Predicts an output for the given feature.
+        :param  feat:   Array-like object of shape (nb_samples)
+        :return:        The mean value of the k neighbours
+        """
+        distances = self.get_distances(feat)
         predictions = np.zeros(len(distances))
         for i in range(len(distances)):
             values = self.targets[np.argsort(distances[i])].flatten()
