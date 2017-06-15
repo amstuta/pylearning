@@ -3,7 +3,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 
-    <title>pylearning API documentation</title>
+    <title>pylearning.trees.node API documentation</title>
     <meta name="description" content="" />
 
   <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300' rel='stylesheet' type='text/css'>
@@ -1042,15 +1042,20 @@ table {
     <ul id="index">
 
 
-
-    <li class="set"><h3><a href="#header-submodules">Sub-modules</a></h3>
+    <li class="set"><h3><a href="#header-classes">Classes</a></h3>
       <ul>
-        <li class="mono"><a href="ensembles/index.html">pylearning.ensembles</a></li>
-        <li class="mono"><a href="neighbours/index.html">pylearning.neighbours</a></li>
-        <li class="mono"><a href="node.m.html">pylearning.node</a></li>
-        <li class="mono"><a href="trees/index.html">pylearning.trees</a></li>
+        <li class="mono">
+        <span class="class_name"><a href="#pylearning.trees.node.DecisionNode">DecisionNode</a></span>
+        
+          
+  <ul>
+    <li class="mono"><a href="#pylearning.trees.node.DecisionNode.__init__">__init__</a></li>
+  </ul>
+
+        </li>
       </ul>
     </li>
+
     </ul>
   </div>
 
@@ -1062,41 +1067,160 @@ table {
 
 
   <header id="section-intro">
-  <h1 class="title"><span class="name">pylearning</span> module</h1>
+  <h1 class="title"><span class="name">pylearning.trees.node</span> module</h1>
   
   
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pylearning.trees.node', this);">Show source &equiv;</a></p>
+  <div id="source-pylearning.trees.node" class="source">
+    <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">DecisionNode</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents a node / leaf in a tree.</span>
+<span class="sd">    :param col:     Column of the variable to split in this node</span>
+<span class="sd">    :param value:   Value of the variable used to split</span>
+<span class="sd">    :param result:  Result contained in leaf nodes</span>
+<span class="sd">    :param tb:      Left branch of the split</span>
+<span class="sd">    :param fb:      Right branch of the split</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">col</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">tb</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">fb</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">col</span> <span class="o">=</span> <span class="n">col</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="n">result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tb</span> <span class="o">=</span> <span class="n">tb</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fb</span> <span class="o">=</span> <span class="n">fb</span>
+</pre></div>
+
+  </div>
 
   </header>
 
   <section id="section-items">
 
 
-
-    <h2 class="section-title" id="header-submodules">Sub-modules</h2>
+    <h2 class="section-title" id="header-classes">Classes</h2>
+      
       <div class="item">
-      <p class="name"><a href="ensembles/index.html">pylearning.ensembles</a></p>
+      <p id="pylearning.trees.node.DecisionNode" class="name">class <span class="ident">DecisionNode</span></p>
       
   
+    <div class="desc"><p>Represents a node / leaf in a tree.
+:param col:     Column of the variable to split in this node
+:param value:   Value of the variable used to split
+:param result:  Result contained in leaf nodes
+:param tb:      Left branch of the split
+:param fb:      Right branch of the split</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pylearning.trees.node.DecisionNode', this);">Show source &equiv;</a></p>
+  <div id="source-pylearning.trees.node.DecisionNode" class="source">
+    <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">DecisionNode</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents a node / leaf in a tree.</span>
+<span class="sd">    :param col:     Column of the variable to split in this node</span>
+<span class="sd">    :param value:   Value of the variable used to split</span>
+<span class="sd">    :param result:  Result contained in leaf nodes</span>
+<span class="sd">    :param tb:      Left branch of the split</span>
+<span class="sd">    :param fb:      Right branch of the split</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
-      </div>
-      <div class="item">
-      <p class="name"><a href="neighbours/index.html">pylearning.neighbours</a></p>
-      
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">col</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">tb</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">fb</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">col</span> <span class="o">=</span> <span class="n">col</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="n">result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tb</span> <span class="o">=</span> <span class="n">tb</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fb</span> <span class="o">=</span> <span class="n">fb</span>
+</pre></div>
+
+  </div>
+</div>
+
+
+      <div class="class">
+          <h3>Ancestors (in MRO)</h3>
+          <ul class="class_list">
+          <li><a href="#pylearning.trees.node.DecisionNode">DecisionNode</a></li>
+          <li>builtins.object</li>
+          </ul>
+          <h3>Static methods</h3>
+            
+  <div class="item">
+    <div class="name def" id="pylearning.trees.node.DecisionNode.__init__">
+    <p>def <span class="ident">__init__</span>(</p><p>self, col=-1, value=None, result=None, tb=None, fb=None)</p>
+    </div>
+    
+
+    
   
+    <div class="desc"><p>Initialize self.  See help(type(self)) for accurate signature.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pylearning.trees.node.DecisionNode.__init__', this);">Show source &equiv;</a></p>
+  <div id="source-pylearning.trees.node.DecisionNode.__init__" class="source">
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">col</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">tb</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">fb</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">col</span> <span class="o">=</span> <span class="n">col</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="n">result</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">tb</span> <span class="o">=</span> <span class="n">tb</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">fb</span> <span class="o">=</span> <span class="n">fb</span>
+</pre></div>
 
-      </div>
-      <div class="item">
-      <p class="name"><a href="node.m.html">pylearning.node</a></p>
-      
+  </div>
+</div>
+
+  </div>
   
+          <h3>Instance variables</h3>
+            <div class="item">
+            <p id="pylearning.trees.node.DecisionNode.col" class="name">var <span class="ident">col</span></p>
+            
 
-      </div>
-      <div class="item">
-      <p class="name"><a href="trees/index.html">pylearning.trees</a></p>
-      
+            
   
+  <div class="source_cont">
+</div>
 
+            </div>
+            <div class="item">
+            <p id="pylearning.trees.node.DecisionNode.fb" class="name">var <span class="ident">fb</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="pylearning.trees.node.DecisionNode.result" class="name">var <span class="ident">result</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="pylearning.trees.node.DecisionNode.tb" class="name">var <span class="ident">tb</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="pylearning.trees.node.DecisionNode.value" class="name">var <span class="ident">value</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
       </div>
+      </div>
+
   </section>
 
     </article>
