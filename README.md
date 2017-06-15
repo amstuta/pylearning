@@ -1,4 +1,4 @@
-## Pylearning: a Python library to use decision trees and random forest learners
+## Pylearning: python machine learning library
 
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](https://github.com/amstuta/pylearning/blob/master/LICENSE.md)
 [![PyPI](https://img.shields.io/pypi/pyversions/pylearning.svg)]()
@@ -6,11 +6,15 @@
 Pylearning is a high-level machine learning package designed to easily prototype
 and implement data analysis programs.
 
-The library includes four algorithms:
-- Decision tree classifier
-- Random forest classifier
-- Decision tree regressor
-- Random forest regressor
+The library includes the following algorithms:
+- Regression:
+    - Decision tree regressor
+    - Random forest regressor
+    - Nearest neighbours regressor
+- Classification:
+    - Decision tree classifier
+    - Random forest classifier
+    - Nearest neighbours classifier
 
 The two random forests algorithms use multithreading to train the trees in a
 parallelized fashion.
@@ -68,12 +72,14 @@ pip install pylearning
 
 ### Further improvements
 
-The core functionalities of trees and random forest are implemented in this
-project, however there are many improvements that could be added:
+The core functionalities of trees, random forest and nearest neighbours are
+implemented in this project, however there are many improvements that could be
+added:
 - gini criterion for splitting nodes
 - pruning
 - ability to split a node into an arbitrary number of child nodes
 - optimizations to reduce time and memory consumption
+- better compatibility with pandas DataFrame
 - ...
 
 If you wish, you're welcome to participate in the project or to make suggestions !

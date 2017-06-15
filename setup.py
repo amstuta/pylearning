@@ -10,9 +10,9 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as fd:
 setup(
     name='pylearning',
 
-    version='2.2.0b1',
+    version='2.2.1b1',
 
-    description='Simple high-level library to use decision trees and random forest learners',
+    description='Simple high-level library to use machine learning algorithms',
     long_description=long_description,
 
     url="https://github.com/amstuta/pylearning.git",
@@ -33,7 +33,7 @@ setup(
         'Programming Language :: Python :: 3.5'
     ],
 
-    keywords='machine learning data decision trees random forest',
+    keywords='machine learning data decision trees random forest nearest neighbours',
 
     packages=find_packages(exclude=['contrib','docs','tests']),
 
