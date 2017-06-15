@@ -1055,26 +1055,26 @@ table {
 
         </li>
         <li class="mono">
-        <span class="class_name"><a href="#pylearning.neighbours.neighbours.KNNClassification">KNNClassification</a></span>
+        <span class="class_name"><a href="#pylearning.neighbours.neighbours.KNNClassifier">KNNClassifier</a></span>
         
           
   <ul>
-    <li class="mono"><a href="#pylearning.neighbours.neighbours.KNNClassification.__init__">__init__</a></li>
-    <li class="mono"><a href="#pylearning.neighbours.neighbours.KNNClassification.fit">fit</a></li>
-    <li class="mono"><a href="#pylearning.neighbours.neighbours.KNNClassification.get_distances">get_distances</a></li>
-    <li class="mono"><a href="#pylearning.neighbours.neighbours.KNNClassification.predict">predict</a></li>
+    <li class="mono"><a href="#pylearning.neighbours.neighbours.KNNClassifier.__init__">__init__</a></li>
+    <li class="mono"><a href="#pylearning.neighbours.neighbours.KNNClassifier.fit">fit</a></li>
+    <li class="mono"><a href="#pylearning.neighbours.neighbours.KNNClassifier.get_distances">get_distances</a></li>
+    <li class="mono"><a href="#pylearning.neighbours.neighbours.KNNClassifier.predict">predict</a></li>
   </ul>
 
         </li>
         <li class="mono">
-        <span class="class_name"><a href="#pylearning.neighbours.neighbours.KNNRegression">KNNRegression</a></span>
+        <span class="class_name"><a href="#pylearning.neighbours.neighbours.KNNRegressor">KNNRegressor</a></span>
         
           
   <ul>
-    <li class="mono"><a href="#pylearning.neighbours.neighbours.KNNRegression.__init__">__init__</a></li>
-    <li class="mono"><a href="#pylearning.neighbours.neighbours.KNNRegression.fit">fit</a></li>
-    <li class="mono"><a href="#pylearning.neighbours.neighbours.KNNRegression.get_distances">get_distances</a></li>
-    <li class="mono"><a href="#pylearning.neighbours.neighbours.KNNRegression.predict">predict</a></li>
+    <li class="mono"><a href="#pylearning.neighbours.neighbours.KNNRegressor.__init__">__init__</a></li>
+    <li class="mono"><a href="#pylearning.neighbours.neighbours.KNNRegressor.fit">fit</a></li>
+    <li class="mono"><a href="#pylearning.neighbours.neighbours.KNNRegressor.get_distances">get_distances</a></li>
+    <li class="mono"><a href="#pylearning.neighbours.neighbours.KNNRegressor.predict">predict</a></li>
   </ul>
 
         </li>
@@ -1128,7 +1128,7 @@ table {
 
 
 
-<span class="k">class</span> <span class="nc">KNNClassification</span><span class="p">(</span><span class="n">KNN</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">KNNClassifier</span><span class="p">(</span><span class="n">KNN</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    K-nearest neighbours algorithm used for classification.</span>
 
@@ -1147,8 +1147,8 @@ table {
 <span class="sd">        :param  targets:    An array-like object of shape (nb_samples) of output</span>
 <span class="sd">                            values</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">groups</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">features</span><span class="p">))</span>
-        <span class="n">zipped</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">targets</span><span class="p">))</span>
+        <span class="n">groups</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">targets</span><span class="p">))</span>
+        <span class="n">zipped</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">features</span><span class="p">))</span>
         <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="n">a</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">zipped</span> <span class="k">if</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">a</span><span class="p">])</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">}</span>
         <span class="n">features</span><span class="p">,</span> <span class="n">targets</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">group_means</span> <span class="o">=</span> <span class="p">{}</span>
@@ -1182,7 +1182,7 @@ table {
 
 
 
-<span class="k">class</span> <span class="nc">KNNRegression</span><span class="p">(</span><span class="n">KNN</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">KNNRegressor</span><span class="p">(</span><span class="n">KNN</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    K-nearest neighbours algorithm used for regression.</span>
 
@@ -1357,7 +1357,7 @@ distance.
       </div>
       
       <div class="item">
-      <p id="pylearning.neighbours.neighbours.KNNClassification" class="name">class <span class="ident">KNNClassification</span></p>
+      <p id="pylearning.neighbours.neighbours.KNNClassifier" class="name">class <span class="ident">KNNClassifier</span></p>
       
   
     <div class="desc"><p>K-nearest neighbours algorithm used for classification.</p>
@@ -1365,9 +1365,9 @@ distance.
                             by the model. If None, all examples will be kept
 :param  k:                  Number of neighbours to use for prediction</p></div>
   <div class="source_cont">
-  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pylearning.neighbours.neighbours.KNNClassification', this);">Show source &equiv;</a></p>
-  <div id="source-pylearning.neighbours.neighbours.KNNClassification" class="source">
-    <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">KNNClassification</span><span class="p">(</span><span class="n">KNN</span><span class="p">):</span>
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pylearning.neighbours.neighbours.KNNClassifier', this);">Show source &equiv;</a></p>
+  <div id="source-pylearning.neighbours.neighbours.KNNClassifier" class="source">
+    <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">KNNClassifier</span><span class="p">(</span><span class="n">KNN</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    K-nearest neighbours algorithm used for classification.</span>
 
@@ -1386,8 +1386,8 @@ distance.
 <span class="sd">        :param  targets:    An array-like object of shape (nb_samples) of output</span>
 <span class="sd">                            values</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">groups</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">features</span><span class="p">))</span>
-        <span class="n">zipped</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">targets</span><span class="p">))</span>
+        <span class="n">groups</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">targets</span><span class="p">))</span>
+        <span class="n">zipped</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">features</span><span class="p">))</span>
         <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="n">a</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">zipped</span> <span class="k">if</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">a</span><span class="p">])</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">}</span>
         <span class="n">features</span><span class="p">,</span> <span class="n">targets</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">group_means</span> <span class="o">=</span> <span class="p">{}</span>
@@ -1427,24 +1427,28 @@ distance.
       <div class="class">
           <h3>Ancestors (in MRO)</h3>
           <ul class="class_list">
-          <li><a href="#pylearning.neighbours.neighbours.KNNClassification">KNNClassification</a></li>
+          <li><a href="#pylearning.neighbours.neighbours.KNNClassifier">KNNClassifier</a></li>
           <li><a href="#pylearning.neighbours.neighbours.KNN">KNN</a></li>
           <li>builtins.object</li>
           </ul>
           <h3>Static methods</h3>
             
   <div class="item">
-    <div class="name def" id="pylearning.neighbours.neighbours.KNNClassification.__init__">
+    <div class="name def" id="pylearning.neighbours.neighbours.KNNClassifier.__init__">
     <p>def <span class="ident">__init__</span>(</p><p>self, samples_per_class=None, k=1)</p>
     </div>
     
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#pylearning.neighbours.neighbours.KNN">KNN</a></code>.<code><a href="#pylearning.neighbours.neighbours.KNN.__init__">__init__</a></code>
+    </p>
 
     
   
-    <div class="desc"><p>Initialize self.  See help(type(self)) for accurate signature.</p></div>
+    <div class="desc inherited"><p>Initialize self.  See help(type(self)) for accurate signature.</p></div>
   <div class="source_cont">
-  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pylearning.neighbours.neighbours.KNNClassification.__init__', this);">Show source &equiv;</a></p>
-  <div id="source-pylearning.neighbours.neighbours.KNNClassification.__init__" class="source">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pylearning.neighbours.neighbours.KNNClassifier.__init__', this);">Show source &equiv;</a></p>
+  <div id="source-pylearning.neighbours.neighbours.KNNClassifier.__init__" class="source">
     <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">samples_per_class</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">samples_per_class</span> <span class="o">=</span> <span class="n">samples_per_class</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">k</span> <span class="o">=</span> <span class="n">k</span>
@@ -1457,7 +1461,7 @@ distance.
   
             
   <div class="item">
-    <div class="name def" id="pylearning.neighbours.neighbours.KNNClassification.fit">
+    <div class="name def" id="pylearning.neighbours.neighbours.KNNClassifier.fit">
     <p>def <span class="ident">fit</span>(</p><p>self, features, targets)</p>
     </div>
     
@@ -1471,8 +1475,8 @@ only saves self.samples_per_class values for each class.
 :param  targets:    An array-like object of shape (nb_samples) of output
                     values</p></div>
   <div class="source_cont">
-  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pylearning.neighbours.neighbours.KNNClassification.fit', this);">Show source &equiv;</a></p>
-  <div id="source-pylearning.neighbours.neighbours.KNNClassification.fit" class="source">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pylearning.neighbours.neighbours.KNNClassifier.fit', this);">Show source &equiv;</a></p>
+  <div id="source-pylearning.neighbours.neighbours.KNNClassifier.fit" class="source">
     <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">targets</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Trains the algorithm on the given dataset. For each class, the algorithm</span>
@@ -1482,8 +1486,8 @@ only saves self.samples_per_class values for each class.
 <span class="sd">    :param  targets:    An array-like object of shape (nb_samples) of output</span>
 <span class="sd">                        values</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">groups</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">features</span><span class="p">))</span>
-    <span class="n">zipped</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">targets</span><span class="p">))</span>
+    <span class="n">groups</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">targets</span><span class="p">))</span>
+    <span class="n">zipped</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">features</span><span class="p">))</span>
     <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="n">a</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">zipped</span> <span class="k">if</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">a</span><span class="p">])</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">}</span>
     <span class="n">features</span><span class="p">,</span> <span class="n">targets</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">group_means</span> <span class="o">=</span> <span class="p">{}</span>
@@ -1508,25 +1512,21 @@ only saves self.samples_per_class values for each class.
   
             
   <div class="item">
-    <div class="name def" id="pylearning.neighbours.neighbours.KNNClassification.get_distances">
+    <div class="name def" id="pylearning.neighbours.neighbours.KNNClassifier.get_distances">
     <p>def <span class="ident">get_distances</span>(</p><p>self, feat)</p>
     </div>
     
-    <p class="inheritance">
-     <strong>Inheritance:</strong>
-       <code><a href="#pylearning.neighbours.neighbours.KNN">KNN</a></code>.<code><a href="#pylearning.neighbours.neighbours.KNN.get_distances">get_distances</a></code>
-    </p>
 
     
   
-    <div class="desc inherited"><p>Calculates the distances between the given feature and all the instances
+    <div class="desc"><p>Calculates the distances between the given feature and all the instances
 saved during training. The calculation method is the L2 Euclidean
 distance.
 :param  feat:   An array-like object of shape (nb_features)
 :return:        A numpy array of shape (nb_training_examples)</p></div>
   <div class="source_cont">
-  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pylearning.neighbours.neighbours.KNNClassification.get_distances', this);">Show source &equiv;</a></p>
-  <div id="source-pylearning.neighbours.neighbours.KNNClassification.get_distances" class="source">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pylearning.neighbours.neighbours.KNNClassifier.get_distances', this);">Show source &equiv;</a></p>
+  <div id="source-pylearning.neighbours.neighbours.KNNClassifier.get_distances" class="source">
     <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">get_distances</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feat</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates the distances between the given feature and all the instances</span>
@@ -1549,7 +1549,7 @@ distance.
   
             
   <div class="item">
-    <div class="name def" id="pylearning.neighbours.neighbours.KNNClassification.predict">
+    <div class="name def" id="pylearning.neighbours.neighbours.KNNClassifier.predict">
     <p>def <span class="ident">predict</span>(</p><p>self, feat)</p>
     </div>
     
@@ -1560,8 +1560,8 @@ distance.
 :param  feat:   Array-like object of shape (nb_samples)
 :return:        The most represented class in the neighbours</p></div>
   <div class="source_cont">
-  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pylearning.neighbours.neighbours.KNNClassification.predict', this);">Show source &equiv;</a></p>
-  <div id="source-pylearning.neighbours.neighbours.KNNClassification.predict" class="source">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pylearning.neighbours.neighbours.KNNClassifier.predict', this);">Show source &equiv;</a></p>
+  <div id="source-pylearning.neighbours.neighbours.KNNClassifier.predict" class="source">
     <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feat</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Predicts an output for the given feature.</span>
@@ -1586,16 +1586,16 @@ distance.
       </div>
       
       <div class="item">
-      <p id="pylearning.neighbours.neighbours.KNNRegression" class="name">class <span class="ident">KNNRegression</span></p>
+      <p id="pylearning.neighbours.neighbours.KNNRegressor" class="name">class <span class="ident">KNNRegressor</span></p>
       
   
     <div class="desc"><p>K-nearest neighbours algorithm used for regression.</p>
 <p>:param  samples_per_class:  Not used in this class
 :param  k:                  Number of neighbours to use for prediction</p></div>
   <div class="source_cont">
-  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pylearning.neighbours.neighbours.KNNRegression', this);">Show source &equiv;</a></p>
-  <div id="source-pylearning.neighbours.neighbours.KNNRegression" class="source">
-    <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">KNNRegression</span><span class="p">(</span><span class="n">KNN</span><span class="p">):</span>
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pylearning.neighbours.neighbours.KNNRegressor', this);">Show source &equiv;</a></p>
+  <div id="source-pylearning.neighbours.neighbours.KNNRegressor" class="source">
+    <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">KNNRegressor</span><span class="p">(</span><span class="n">KNN</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    K-nearest neighbours algorithm used for regression.</span>
 
@@ -1637,24 +1637,28 @@ distance.
       <div class="class">
           <h3>Ancestors (in MRO)</h3>
           <ul class="class_list">
-          <li><a href="#pylearning.neighbours.neighbours.KNNRegression">KNNRegression</a></li>
+          <li><a href="#pylearning.neighbours.neighbours.KNNRegressor">KNNRegressor</a></li>
           <li><a href="#pylearning.neighbours.neighbours.KNN">KNN</a></li>
           <li>builtins.object</li>
           </ul>
           <h3>Static methods</h3>
             
   <div class="item">
-    <div class="name def" id="pylearning.neighbours.neighbours.KNNRegression.__init__">
+    <div class="name def" id="pylearning.neighbours.neighbours.KNNRegressor.__init__">
     <p>def <span class="ident">__init__</span>(</p><p>self, samples_per_class=None, k=1)</p>
     </div>
     
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#pylearning.neighbours.neighbours.KNN">KNN</a></code>.<code><a href="#pylearning.neighbours.neighbours.KNN.__init__">__init__</a></code>
+    </p>
 
     
   
-    <div class="desc"><p>Initialize self.  See help(type(self)) for accurate signature.</p></div>
+    <div class="desc inherited"><p>Initialize self.  See help(type(self)) for accurate signature.</p></div>
   <div class="source_cont">
-  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pylearning.neighbours.neighbours.KNNRegression.__init__', this);">Show source &equiv;</a></p>
-  <div id="source-pylearning.neighbours.neighbours.KNNRegression.__init__" class="source">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pylearning.neighbours.neighbours.KNNRegressor.__init__', this);">Show source &equiv;</a></p>
+  <div id="source-pylearning.neighbours.neighbours.KNNRegressor.__init__" class="source">
     <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">samples_per_class</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">samples_per_class</span> <span class="o">=</span> <span class="n">samples_per_class</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">k</span> <span class="o">=</span> <span class="n">k</span>
@@ -1667,7 +1671,7 @@ distance.
   
             
   <div class="item">
-    <div class="name def" id="pylearning.neighbours.neighbours.KNNRegression.fit">
+    <div class="name def" id="pylearning.neighbours.neighbours.KNNRegressor.fit">
     <p>def <span class="ident">fit</span>(</p><p>self, features, targets)</p>
     </div>
     
@@ -1679,8 +1683,8 @@ distance.
 :param  targets:    An array-like object of shape (nb_samples) of output
                     values</p></div>
   <div class="source_cont">
-  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pylearning.neighbours.neighbours.KNNRegression.fit', this);">Show source &equiv;</a></p>
-  <div id="source-pylearning.neighbours.neighbours.KNNRegression.fit" class="source">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pylearning.neighbours.neighbours.KNNRegressor.fit', this);">Show source &equiv;</a></p>
+  <div id="source-pylearning.neighbours.neighbours.KNNRegressor.fit" class="source">
     <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">targets</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Trains the algorithm on the given dataset.</span>
@@ -1699,25 +1703,21 @@ distance.
   
             
   <div class="item">
-    <div class="name def" id="pylearning.neighbours.neighbours.KNNRegression.get_distances">
+    <div class="name def" id="pylearning.neighbours.neighbours.KNNRegressor.get_distances">
     <p>def <span class="ident">get_distances</span>(</p><p>self, feat)</p>
     </div>
     
-    <p class="inheritance">
-     <strong>Inheritance:</strong>
-       <code><a href="#pylearning.neighbours.neighbours.KNN">KNN</a></code>.<code><a href="#pylearning.neighbours.neighbours.KNN.get_distances">get_distances</a></code>
-    </p>
 
     
   
-    <div class="desc inherited"><p>Calculates the distances between the given feature and all the instances
+    <div class="desc"><p>Calculates the distances between the given feature and all the instances
 saved during training. The calculation method is the L2 Euclidean
 distance.
 :param  feat:   An array-like object of shape (nb_features)
 :return:        A numpy array of shape (nb_training_examples)</p></div>
   <div class="source_cont">
-  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pylearning.neighbours.neighbours.KNNRegression.get_distances', this);">Show source &equiv;</a></p>
-  <div id="source-pylearning.neighbours.neighbours.KNNRegression.get_distances" class="source">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pylearning.neighbours.neighbours.KNNRegressor.get_distances', this);">Show source &equiv;</a></p>
+  <div id="source-pylearning.neighbours.neighbours.KNNRegressor.get_distances" class="source">
     <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">get_distances</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feat</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates the distances between the given feature and all the instances</span>
@@ -1740,7 +1740,7 @@ distance.
   
             
   <div class="item">
-    <div class="name def" id="pylearning.neighbours.neighbours.KNNRegression.predict">
+    <div class="name def" id="pylearning.neighbours.neighbours.KNNRegressor.predict">
     <p>def <span class="ident">predict</span>(</p><p>self, feat)</p>
     </div>
     
@@ -1751,8 +1751,8 @@ distance.
 :param  feat:   Array-like object of shape (nb_samples)
 :return:        The mean value of the k neighbours</p></div>
   <div class="source_cont">
-  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pylearning.neighbours.neighbours.KNNRegression.predict', this);">Show source &equiv;</a></p>
-  <div id="source-pylearning.neighbours.neighbours.KNNRegression.predict" class="source">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pylearning.neighbours.neighbours.KNNRegressor.predict', this);">Show source &equiv;</a></p>
+  <div id="source-pylearning.neighbours.neighbours.KNNRegressor.predict" class="source">
     <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feat</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Predicts an output for the given feature.</span>
