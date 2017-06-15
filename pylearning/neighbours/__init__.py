@@ -1,2 +1,2 @@
-from .neighbours import KNNRegression
-from .neighbours import KNNClassification
+from .neighbours import KNNRegressor
+from .neighbours import KNNClassifier

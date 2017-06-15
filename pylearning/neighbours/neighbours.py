@@ -29,7 +29,7 @@ class KNN(metaclass=abc.ABCMeta):
 
 
 
-class KNNClassification(KNN):
+class KNNClassifier(KNN):
     """
     K-nearest neighbours algorithm used for classification.
 
@@ -48,8 +48,8 @@ class KNNClassification(KNN):
         :param  targets:    An array-like object of shape (nb_samples) of output
                             values
         """
-        groups = list(set(features))
-        zipped = list(zip(features, targets))
+        groups = list(set(targets))
+        zipped = list(zip(targets, features))
         data = {a : np.array([b[1] for b in zipped if b[0] == a]) for a in groups}
         features, targets = [], []
         self.group_means = {}
@@ -83,7 +83,7 @@ class KNNClassification(KNN):
 
 
 
-class KNNRegression(KNN):
+class KNNRegressor(KNN):
     """
     K-nearest neighbours algorithm used for regression.
 

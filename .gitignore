@@ -6,5 +6,6 @@ pylearning.egg-info
 deploy.sh
 income.csv
 user_cpu.data
+train.csv
 rf_example.py
 TODO
