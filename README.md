@@ -65,9 +65,11 @@ A complete documentation of the API is available [here](https://pythonhosted.org
 
 Pylearning requires to have numpy installed. It can be installed simply using Pypy:
 ```sh
+# for the stable version
 pip3 install pylearning
-# OR
-pip install pylearning
+
+# for the latest version
+pip3 install git+https://github.com/amstuta/pylearning.git
 ```
 
 ### Further improvements
