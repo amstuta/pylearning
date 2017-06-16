@@ -11,6 +11,7 @@ class KNN(metaclass=abc.ABCMeta):
     def __init__(self, samples_per_class=None, k=1):
         self.samples_per_class = samples_per_class
         self.k = k
+        self.last_confidence = None
 
 
     def get_distances(self, feat):
@@ -21,11 +22,22 @@ class KNN(metaclass=abc.ABCMeta):
         :param  feat:   An array-like object of shape (nb_features)
         :return:        A numpy array of shape (nb_training_examples)
         """
-        p_squared = np.square(feat).sum() #.(axis=1)
+        p_squared = np.square(feat).sum()
         q_squared = np.square(self.features).sum(axis=1)
         product   = -2 * feat.dot(self.features.T)
         distances = np.sqrt(product + q_squared + np.matrix(p_squared).T)
         return distances
+
+
+    def get_last_confidence(self):
+        """
+        Returns the confidence calculated on the last prediction made.
+        For classification, confidence is the number of instances of the
+        predicted class in the neighbours divided by the number of neighbours.
+        For regression, confidence is one minus (variance in the neighbours
+        divided by the mean value of neighbours)
+        """
+        return self.last_confidence
 
 
 
@@ -74,11 +86,10 @@ class KNNClassifier(KNN):
         :return:        The most represented class in the neighbours
         """
         distances = self.get_distances(feat)
-        pred = np.zeros(len(distances))
-        for i in range(len(distances)):
-            labels = self.targets[np.argsort(distances[i])].flatten()
-            k_closest = list(labels[:self.k])
-            pred[i] = max(k_closest, key=k_closest.count)
+        labels = self.targets[np.argsort(distances[0])].flatten()
+        k_closest = list(labels[:self.k])
+        pred = max(k_closest, key=k_closest.count)
+        self.last_confidence = k_closest.count(pred) / self.k
         return pred
 
 
@@ -110,9 +121,8 @@ class KNNRegressor(KNN):
         :return:        The mean value of the k neighbours
         """
         distances = self.get_distances(feat)
-        predictions = np.zeros(len(distances))
-        for i in range(len(distances)):
-            values = self.targets[np.argsort(distances[i])].flatten()
-            k_closest = list(values[:self.k])
-            predictions[i] = np.mean(k_closest)
+        values = self.targets[np.argsort(distances[0])].flatten()
+        k_closest = list(values[:self.k])
+        predictions = np.mean(k_closest)
+        self.last_confidence = 1 - np.var(k_closest) / np.mean(k_closest)
         return predictions
