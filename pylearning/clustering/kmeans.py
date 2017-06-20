@@ -4,7 +4,12 @@ import numpy as np
 
 class KMeans:
     """
-    K-means algorithm.
+    K-means clustering algorithm.
+
+    :param  k:              Number of cluster to find in the training data
+    :param  max_iterations: Maximum number of iterations during training. If no
+                            example change of cluster during an iteration, the
+                            training is finished. Default value: 1000.
     """
 
     def __init__(self, k, max_iterations=1000):
@@ -15,6 +20,14 @@ class KMeans:
 
 
     def fit(self, features):
+        """
+        Finds a set of clusters / centroids in the given dataset. After it
+        finished, self.centroids contains the centroid of each cluster and
+        self.labels contains the label assigned to each feature.
+
+        :param  features:   Dataset used to find cluster. Array-like object
+                            of shape (nb_samples, nb_features).
+        """
         mins = features.min()
         maxs = features.max()
 
@@ -51,12 +64,24 @@ class KMeans:
 
 
     def predict(self, feature):
+        """
+        Predicts the class associated with the given example by finding the
+        closest centroid.
+
+        :param  feature:    Array-like object of shape (nb_features)
+        """
         distance = self.get_distances(feature)
         closest = distance.argmin()
         return closest
 
 
     def get_distances(self, features):
+        """
+        Returns the distance between the given example(s) and the centroids.
+
+        :param  features:   Array-like object of shape (nb_samples, nb_features)
+                            or (nb_features)
+        """
         try:
             p_squared = np.square(features).sum(axis=1)
         except:
