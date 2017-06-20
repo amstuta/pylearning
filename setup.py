@@ -10,7 +10,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as fd:
 setup(
     name='pylearning',
 
-    version='3.0.1b1',
+    version='3.1.1b1',
 
     description='Simple high-level library to use machine learning algorithms',
     long_description=long_description,
@@ -33,7 +33,7 @@ setup(
         'Programming Language :: Python :: 3.5'
     ],
 
-    keywords='machine learning data decision trees random forest nearest neighbours',
+    keywords='machine learning data decision trees random forest nearest neighbours kmeans clustering',
 
     packages=find_packages(exclude=['contrib','docs','tests']),
 

@@ -15,6 +15,8 @@ The library includes the following algorithms:
     - Decision tree classifier
     - Random forest classifier
     - Nearest neighbours classifier
+- Clustering:
+    - K-means
 
 The two random forests algorithms use multithreading to train the trees in a
 parallelized fashion.
