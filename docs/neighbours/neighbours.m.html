@@ -1051,6 +1051,7 @@ table {
   <ul>
     <li class="mono"><a href="#pylearning.neighbours.neighbours.KNN.__init__">__init__</a></li>
     <li class="mono"><a href="#pylearning.neighbours.neighbours.KNN.get_distances">get_distances</a></li>
+    <li class="mono"><a href="#pylearning.neighbours.neighbours.KNN.get_last_confidence">get_last_confidence</a></li>
   </ul>
 
         </li>
@@ -1062,6 +1063,7 @@ table {
     <li class="mono"><a href="#pylearning.neighbours.neighbours.KNNClassifier.__init__">__init__</a></li>
     <li class="mono"><a href="#pylearning.neighbours.neighbours.KNNClassifier.fit">fit</a></li>
     <li class="mono"><a href="#pylearning.neighbours.neighbours.KNNClassifier.get_distances">get_distances</a></li>
+    <li class="mono"><a href="#pylearning.neighbours.neighbours.KNNClassifier.get_last_confidence">get_last_confidence</a></li>
     <li class="mono"><a href="#pylearning.neighbours.neighbours.KNNClassifier.predict">predict</a></li>
   </ul>
 
@@ -1074,6 +1076,7 @@ table {
     <li class="mono"><a href="#pylearning.neighbours.neighbours.KNNRegressor.__init__">__init__</a></li>
     <li class="mono"><a href="#pylearning.neighbours.neighbours.KNNRegressor.fit">fit</a></li>
     <li class="mono"><a href="#pylearning.neighbours.neighbours.KNNRegressor.get_distances">get_distances</a></li>
+    <li class="mono"><a href="#pylearning.neighbours.neighbours.KNNRegressor.get_last_confidence">get_last_confidence</a></li>
     <li class="mono"><a href="#pylearning.neighbours.neighbours.KNNRegressor.predict">predict</a></li>
   </ul>
 
@@ -1110,6 +1113,7 @@ table {
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">samples_per_class</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">samples_per_class</span> <span class="o">=</span> <span class="n">samples_per_class</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">k</span> <span class="o">=</span> <span class="n">k</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_confidence</span> <span class="o">=</span> <span class="bp">None</span>
 
 
     <span class="k">def</span> <span class="nf">get_distances</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feat</span><span class="p">):</span>
@@ -1120,11 +1124,22 @@ table {
 <span class="sd">        :param  feat:   An array-like object of shape (nb_features)</span>
 <span class="sd">        :return:        A numpy array of shape (nb_training_examples)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">p_squared</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">feat</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="c1">#.(axis=1)</span>
+        <span class="n">p_squared</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">feat</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
         <span class="n">q_squared</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">product</span>   <span class="o">=</span> <span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">feat</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
         <span class="n">distances</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">product</span> <span class="o">+</span> <span class="n">q_squared</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">p_squared</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">distances</span>
+
+
+    <span class="k">def</span> <span class="nf">get_last_confidence</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the confidence calculated on the last prediction made.</span>
+<span class="sd">        For classification, confidence is the number of instances of the</span>
+<span class="sd">        predicted class in the neighbours divided by the number of neighbours.</span>
+<span class="sd">        For regression, confidence is one minus (variance in the neighbours</span>
+<span class="sd">        divided by the mean value of neighbours)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_confidence</span>
 
 
 
@@ -1173,11 +1188,10 @@ table {
 <span class="sd">        :return:        The most represented class in the neighbours</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">distances</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_distances</span><span class="p">(</span><span class="n">feat</span><span class="p">)</span>
-        <span class="n">pred</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">distances</span><span class="p">))</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">distances</span><span class="p">)):</span>
-            <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">distances</span><span class="p">[</span><span class="n">i</span><span class="p">])]</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
-            <span class="n">k_closest</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">labels</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">])</span>
-            <span class="n">pred</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">k_closest</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">k_closest</span><span class="o">.</span><span class="n">count</span><span class="p">)</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">distances</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="n">k_closest</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">labels</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">])</span>
+        <span class="n">pred</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">k_closest</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">k_closest</span><span class="o">.</span><span class="n">count</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_confidence</span> <span class="o">=</span> <span class="n">k_closest</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">pred</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">k</span>
         <span class="k">return</span> <span class="n">pred</span>
 
 
@@ -1209,11 +1223,10 @@ table {
 <span class="sd">        :return:        The mean value of the k neighbours</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">distances</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_distances</span><span class="p">(</span><span class="n">feat</span><span class="p">)</span>
-        <span class="n">predictions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">distances</span><span class="p">))</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">distances</span><span class="p">)):</span>
-            <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">distances</span><span class="p">[</span><span class="n">i</span><span class="p">])]</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
-            <span class="n">k_closest</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">values</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">])</span>
-            <span class="n">predictions</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">k_closest</span><span class="p">)</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">distances</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="n">k_closest</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">values</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">])</span>
+        <span class="n">predictions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">k_closest</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_confidence</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">k_closest</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">k_closest</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">predictions</span>
 </pre></div>
 
@@ -1244,6 +1257,7 @@ meant to be instanciated, ont its subclasses can be used.</p></div>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">samples_per_class</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">samples_per_class</span> <span class="o">=</span> <span class="n">samples_per_class</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">k</span> <span class="o">=</span> <span class="n">k</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_confidence</span> <span class="o">=</span> <span class="bp">None</span>
 
 
     <span class="k">def</span> <span class="nf">get_distances</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feat</span><span class="p">):</span>
@@ -1254,11 +1268,22 @@ meant to be instanciated, ont its subclasses can be used.</p></div>
 <span class="sd">        :param  feat:   An array-like object of shape (nb_features)</span>
 <span class="sd">        :return:        A numpy array of shape (nb_training_examples)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">p_squared</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">feat</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="c1">#.(axis=1)</span>
+        <span class="n">p_squared</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">feat</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
         <span class="n">q_squared</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">product</span>   <span class="o">=</span> <span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">feat</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
         <span class="n">distances</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">product</span> <span class="o">+</span> <span class="n">q_squared</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">p_squared</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">distances</span>
+
+
+    <span class="k">def</span> <span class="nf">get_last_confidence</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the confidence calculated on the last prediction made.</span>
+<span class="sd">        For classification, confidence is the number of instances of the</span>
+<span class="sd">        predicted class in the neighbours divided by the number of neighbours.</span>
+<span class="sd">        For regression, confidence is one minus (variance in the neighbours</span>
+<span class="sd">        divided by the mean value of neighbours)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_confidence</span>
 </pre></div>
 
   </div>
@@ -1288,6 +1313,7 @@ meant to be instanciated, ont its subclasses can be used.</p></div>
     <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">samples_per_class</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">samples_per_class</span> <span class="o">=</span> <span class="n">samples_per_class</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">k</span> <span class="o">=</span> <span class="n">k</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">last_confidence</span> <span class="o">=</span> <span class="bp">None</span>
 </pre></div>
 
   </div>
@@ -1320,7 +1346,7 @@ distance.
 <span class="sd">    :param  feat:   An array-like object of shape (nb_features)</span>
 <span class="sd">    :return:        A numpy array of shape (nb_training_examples)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">p_squared</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">feat</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="c1">#.(axis=1)</span>
+    <span class="n">p_squared</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">feat</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
     <span class="n">q_squared</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">product</span>   <span class="o">=</span> <span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">feat</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
     <span class="n">distances</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">product</span> <span class="o">+</span> <span class="n">q_squared</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">p_squared</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
@@ -1332,9 +1358,52 @@ distance.
 
   </div>
   
+            
+  <div class="item">
+    <div class="name def" id="pylearning.neighbours.neighbours.KNN.get_last_confidence">
+    <p>def <span class="ident">get_last_confidence</span>(</p><p>self)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Returns the confidence calculated on the last prediction made.
+For classification, confidence is the number of instances of the
+predicted class in the neighbours divided by the number of neighbours.
+For regression, confidence is one minus (variance in the neighbours
+divided by the mean value of neighbours)</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pylearning.neighbours.neighbours.KNN.get_last_confidence', this);">Show source &equiv;</a></p>
+  <div id="source-pylearning.neighbours.neighbours.KNN.get_last_confidence" class="source">
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">get_last_confidence</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the confidence calculated on the last prediction made.</span>
+<span class="sd">    For classification, confidence is the number of instances of the</span>
+<span class="sd">    predicted class in the neighbours divided by the number of neighbours.</span>
+<span class="sd">    For regression, confidence is one minus (variance in the neighbours</span>
+<span class="sd">    divided by the mean value of neighbours)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_confidence</span>
+</pre></div>
+
+  </div>
+</div>
+
+  </div>
+  
           <h3>Instance variables</h3>
             <div class="item">
             <p id="pylearning.neighbours.neighbours.KNN.k" class="name">var <span class="ident">k</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="pylearning.neighbours.neighbours.KNN.last_confidence" class="name">var <span class="ident">last_confidence</span></p>
             
 
             
@@ -1412,11 +1481,10 @@ distance.
 <span class="sd">        :return:        The most represented class in the neighbours</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">distances</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_distances</span><span class="p">(</span><span class="n">feat</span><span class="p">)</span>
-        <span class="n">pred</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">distances</span><span class="p">))</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">distances</span><span class="p">)):</span>
-            <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">distances</span><span class="p">[</span><span class="n">i</span><span class="p">])]</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
-            <span class="n">k_closest</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">labels</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">])</span>
-            <span class="n">pred</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">k_closest</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">k_closest</span><span class="o">.</span><span class="n">count</span><span class="p">)</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">distances</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="n">k_closest</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">labels</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">])</span>
+        <span class="n">pred</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">k_closest</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">k_closest</span><span class="o">.</span><span class="n">count</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_confidence</span> <span class="o">=</span> <span class="n">k_closest</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">pred</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">k</span>
         <span class="k">return</span> <span class="n">pred</span>
 </pre></div>
 
@@ -1438,20 +1506,17 @@ distance.
     <p>def <span class="ident">__init__</span>(</p><p>self, samples_per_class=None, k=1)</p>
     </div>
     
-    <p class="inheritance">
-     <strong>Inheritance:</strong>
-       <code><a href="#pylearning.neighbours.neighbours.KNN">KNN</a></code>.<code><a href="#pylearning.neighbours.neighbours.KNN.__init__">__init__</a></code>
-    </p>
 
     
   
-    <div class="desc inherited"><p>Initialize self.  See help(type(self)) for accurate signature.</p></div>
+    <div class="desc"><p>Initialize self.  See help(type(self)) for accurate signature.</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pylearning.neighbours.neighbours.KNNClassifier.__init__', this);">Show source &equiv;</a></p>
   <div id="source-pylearning.neighbours.neighbours.KNNClassifier.__init__" class="source">
     <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">samples_per_class</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">samples_per_class</span> <span class="o">=</span> <span class="n">samples_per_class</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">k</span> <span class="o">=</span> <span class="n">k</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">last_confidence</span> <span class="o">=</span> <span class="bp">None</span>
 </pre></div>
 
   </div>
@@ -1535,11 +1600,44 @@ distance.
 <span class="sd">    :param  feat:   An array-like object of shape (nb_features)</span>
 <span class="sd">    :return:        A numpy array of shape (nb_training_examples)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">p_squared</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">feat</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="c1">#.(axis=1)</span>
+    <span class="n">p_squared</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">feat</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
     <span class="n">q_squared</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">product</span>   <span class="o">=</span> <span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">feat</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
     <span class="n">distances</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">product</span> <span class="o">+</span> <span class="n">q_squared</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">p_squared</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">distances</span>
+</pre></div>
+
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="pylearning.neighbours.neighbours.KNNClassifier.get_last_confidence">
+    <p>def <span class="ident">get_last_confidence</span>(</p><p>self)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Returns the confidence calculated on the last prediction made.
+For classification, confidence is the number of instances of the
+predicted class in the neighbours divided by the number of neighbours.
+For regression, confidence is one minus (variance in the neighbours
+divided by the mean value of neighbours)</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pylearning.neighbours.neighbours.KNNClassifier.get_last_confidence', this);">Show source &equiv;</a></p>
+  <div id="source-pylearning.neighbours.neighbours.KNNClassifier.get_last_confidence" class="source">
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">get_last_confidence</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the confidence calculated on the last prediction made.</span>
+<span class="sd">    For classification, confidence is the number of instances of the</span>
+<span class="sd">    predicted class in the neighbours divided by the number of neighbours.</span>
+<span class="sd">    For regression, confidence is one minus (variance in the neighbours</span>
+<span class="sd">    divided by the mean value of neighbours)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_confidence</span>
 </pre></div>
 
   </div>
@@ -1569,11 +1667,10 @@ distance.
 <span class="sd">    :return:        The most represented class in the neighbours</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">distances</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_distances</span><span class="p">(</span><span class="n">feat</span><span class="p">)</span>
-    <span class="n">pred</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">distances</span><span class="p">))</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">distances</span><span class="p">)):</span>
-        <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">distances</span><span class="p">[</span><span class="n">i</span><span class="p">])]</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
-        <span class="n">k_closest</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">labels</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">])</span>
-        <span class="n">pred</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">k_closest</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">k_closest</span><span class="o">.</span><span class="n">count</span><span class="p">)</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">distances</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+    <span class="n">k_closest</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">labels</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">])</span>
+    <span class="n">pred</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">k_closest</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">k_closest</span><span class="o">.</span><span class="n">count</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">last_confidence</span> <span class="o">=</span> <span class="n">k_closest</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">pred</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">k</span>
     <span class="k">return</span> <span class="n">pred</span>
 </pre></div>
 
@@ -1622,11 +1719,10 @@ distance.
 <span class="sd">        :return:        The mean value of the k neighbours</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">distances</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_distances</span><span class="p">(</span><span class="n">feat</span><span class="p">)</span>
-        <span class="n">predictions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">distances</span><span class="p">))</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">distances</span><span class="p">)):</span>
-            <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">distances</span><span class="p">[</span><span class="n">i</span><span class="p">])]</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
-            <span class="n">k_closest</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">values</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">])</span>
-            <span class="n">predictions</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">k_closest</span><span class="p">)</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">distances</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="n">k_closest</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">values</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">])</span>
+        <span class="n">predictions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">k_closest</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_confidence</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">k_closest</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">k_closest</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">predictions</span>
 </pre></div>
 
@@ -1648,20 +1744,17 @@ distance.
     <p>def <span class="ident">__init__</span>(</p><p>self, samples_per_class=None, k=1)</p>
     </div>
     
-    <p class="inheritance">
-     <strong>Inheritance:</strong>
-       <code><a href="#pylearning.neighbours.neighbours.KNN">KNN</a></code>.<code><a href="#pylearning.neighbours.neighbours.KNN.__init__">__init__</a></code>
-    </p>
 
     
   
-    <div class="desc inherited"><p>Initialize self.  See help(type(self)) for accurate signature.</p></div>
+    <div class="desc"><p>Initialize self.  See help(type(self)) for accurate signature.</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pylearning.neighbours.neighbours.KNNRegressor.__init__', this);">Show source &equiv;</a></p>
   <div id="source-pylearning.neighbours.neighbours.KNNRegressor.__init__" class="source">
     <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">samples_per_class</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">samples_per_class</span> <span class="o">=</span> <span class="n">samples_per_class</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">k</span> <span class="o">=</span> <span class="n">k</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">last_confidence</span> <span class="o">=</span> <span class="bp">None</span>
 </pre></div>
 
   </div>
@@ -1726,11 +1819,44 @@ distance.
 <span class="sd">    :param  feat:   An array-like object of shape (nb_features)</span>
 <span class="sd">    :return:        A numpy array of shape (nb_training_examples)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">p_squared</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">feat</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="c1">#.(axis=1)</span>
+    <span class="n">p_squared</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">feat</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
     <span class="n">q_squared</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">product</span>   <span class="o">=</span> <span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">feat</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
     <span class="n">distances</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">product</span> <span class="o">+</span> <span class="n">q_squared</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">p_squared</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">distances</span>
+</pre></div>
+
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="pylearning.neighbours.neighbours.KNNRegressor.get_last_confidence">
+    <p>def <span class="ident">get_last_confidence</span>(</p><p>self)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Returns the confidence calculated on the last prediction made.
+For classification, confidence is the number of instances of the
+predicted class in the neighbours divided by the number of neighbours.
+For regression, confidence is one minus (variance in the neighbours
+divided by the mean value of neighbours)</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pylearning.neighbours.neighbours.KNNRegressor.get_last_confidence', this);">Show source &equiv;</a></p>
+  <div id="source-pylearning.neighbours.neighbours.KNNRegressor.get_last_confidence" class="source">
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">get_last_confidence</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the confidence calculated on the last prediction made.</span>
+<span class="sd">    For classification, confidence is the number of instances of the</span>
+<span class="sd">    predicted class in the neighbours divided by the number of neighbours.</span>
+<span class="sd">    For regression, confidence is one minus (variance in the neighbours</span>
+<span class="sd">    divided by the mean value of neighbours)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_confidence</span>
 </pre></div>
 
   </div>
@@ -1760,11 +1886,10 @@ distance.
 <span class="sd">    :return:        The mean value of the k neighbours</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">distances</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_distances</span><span class="p">(</span><span class="n">feat</span><span class="p">)</span>
-    <span class="n">predictions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">distances</span><span class="p">))</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">distances</span><span class="p">)):</span>
-        <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">distances</span><span class="p">[</span><span class="n">i</span><span class="p">])]</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
-        <span class="n">k_closest</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">values</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">])</span>
-        <span class="n">predictions</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">k_closest</span><span class="p">)</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">distances</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+    <span class="n">k_closest</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">values</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">])</span>
+    <span class="n">predictions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">k_closest</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">last_confidence</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">k_closest</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">k_closest</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">predictions</span>
 </pre></div>
 
