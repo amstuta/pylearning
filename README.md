@@ -28,20 +28,21 @@ All the algorithms available use the same simple interface described in the
 examples below.
 
 ```python
-# Basic classification example using a decision tree
+# Basic clustering example using k-means algorithm
 
-from pylearning.trees import DecisionTreeClassifier
+from pylearning.clustering import KMeans
 
-# Load your training dataset
-features, targets = ...
+# Load your dataset
+features = ...
 
-tree = DecisionTreeClassifier(max_depth=10)
-tree.fit(features, targets)
+km = KMeans(k=3, max_iterations=100)
+km.fit(features)
 
-# Load a testing sample
-test_feature, test_target = ...
+labels = km.labels
+print(labels)
 
-predicted_class = tree.predict(test_feature, test_target)
+# Depending on the number of dimensions in your dataset, it is possible
+# to create a plot to visualize the inferred labels
 ```
 
 ```python
@@ -76,15 +77,14 @@ pip3 install git+https://github.com/amstuta/pylearning.git
 
 ### Further improvements
 
-The core functionalities of trees, random forest and nearest neighbours are
-implemented in this project, however there are many improvements that could be
-added:
-- gini criterion for splitting nodes
-- pruning
-- ability to split a node into an arbitrary number of child nodes
+The core functionalities of the different algorithms are
+implemented in this project, however there are many possible improvements:
+- gini criterion for splitting nodes (Decision trees)
+- pruning (Decision trees)
+- ability to split a node into an arbitrary number of child nodes (Decision trees)
 - optimizations to reduce time and memory consumption
 - better compatibility with pandas DataFrame
-- ...
+- addition of new algorithms (density-based clustering, SVM, neural networks, ...)
 
 If you wish, you're welcome to participate in the project or to make suggestions !
 To do so, you can simply open an issue or fork the project and then create a pull
