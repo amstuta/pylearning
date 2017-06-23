@@ -17,6 +17,7 @@ The library includes the following algorithms:
     - Nearest neighbours classifier
 - Clustering:
     - K-means
+    - DBSCAN (density-based clustering)
 
 The two random forests algorithms use multithreading to train the trees in a
 parallelized fashion.
