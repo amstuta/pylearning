@@ -29,24 +29,6 @@ All the algorithms available use the same simple interface described in the
 examples below.
 
 ```python
-# Basic clustering example using k-means algorithm
-
-from pylearning.clustering import KMeans
-
-# Load your dataset
-features = ...
-
-km = KMeans(k=3, max_iterations=100)
-km.fit(features)
-
-labels = km.labels
-print(labels)
-
-# Depending on the number of dimensions in your dataset, it is possible
-# to create a plot to visualize the inferred labels
-```
-
-```python
 # Basic regression example using a random forest
 
 from pylearning.ensembles import RandomForestRegressor
@@ -62,6 +44,36 @@ test_feature, test_target = ...
 
 value_predicted = rf.predict(test_feature, test_target)
 ```
+
+```python
+# Clustering example using DBSCAN algorithm
+
+import matplotlib.pyplot as plt
+from pylearning.clustering import DBSCAN
+from sklearn.datasets import make_circles
+
+# Load a dataset composed of two circles
+data = make_circles(n_samples=1000, noise=0.05, factor=0.3)[0]
+
+cl = DBSCAN(epsilon=0.2)
+cl.fit(data)
+
+labels_data = {i: ([],[]) for i in range(-1, 2)}
+for ex, label in zip(data, cl.labels):
+    labels_data[label][0].append(ex[0])
+    labels_data[label][1].append(ex[1])
+
+colors = ['g','b']
+for label, values in labels_data.items():
+    if label == -1:
+        plt.scatter(values[0], values[1], color='black')
+    else:
+        plt.scatter(values[0], values[1], color=colors[label], s=50)
+
+plt.show()
+```
+
+![Alt text](resources/dbscan.png?raw=true)
 
 A complete documentation of the API is available [here](https://pythonhosted.org/pylearning/).
 
