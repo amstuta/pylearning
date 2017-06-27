@@ -10,7 +10,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as fd:
 setup(
     name='pylearning',
 
-    version='3.1.1b1',
+    version='3.2.1b1',
 
     description='Simple high-level library to use machine learning algorithms',
     long_description=long_description,
