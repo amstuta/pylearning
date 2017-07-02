@@ -75,7 +75,7 @@ plt.show()
 
 ![Alt text](resources/dbscan.png?raw=true)
 
-A complete documentation of the API is available [here](https://pythonhosted.org/pylearning/).
+A complete documentation of the API is available [here](https://pylearning.arthuramstutz.com/).
 
 ### Installation
 
