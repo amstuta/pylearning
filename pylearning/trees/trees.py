@@ -1,5 +1,6 @@
 import random
 import abc
+import numpy as np
 from math import log2, sqrt
 from numbers import Number
 
@@ -135,7 +136,7 @@ class DecisionTree(metaclass=abc.ABCMeta):
         :param targets:     1D array-like targets
         :return:            Dictionary of target => number of occurences
         """
-        counts = {k: targets.count(k) for k in set(targets)}
+        counts = dict(zip(*np.unique(targets, return_counts=True)))
         return counts
 
 
